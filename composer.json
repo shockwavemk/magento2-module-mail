@@ -1,0 +1,22 @@
+{
+    "name": "shockwavemk/magento2-module-smtp",
+    "description": "Sending Magento2 mails through an external smtp-server",
+    "require": {
+        "mailgun/mailgun-php": "~1.7.2",
+        "mandrill/mandrill": "1.0.54",
+        "sendgrid/sendgrid": "v3.2.0"
+    },
+    "type": "magento2-module",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Shockwavemk\\Smtp\\": ""
+        }
+    }
+}
