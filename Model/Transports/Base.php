@@ -1,53 +1,108 @@
 <?php
 /**
- * Copyright © 2015 Martin Kramer. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright 2016 Shockwave-Design - J. & M. Kramer, all rights reserved.
+ * See LICENSE.txt for license details.
  */
+namespace Shockwavemk\Mail\Base\Model\Transports;
 
-namespace Shockwavemk\Mail\Model\Transports;
-
-use Symfony\Component\Config\Definition\Exception\Exception;
-
-class Base implements \Magento\Framework\Mail\TransportInterface
+/**
+ * Class Base
+ * @package Shockwavemk\Mail\Base\Model\Transports
+ */
+class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
 {
     /**
-     * @var \Magento\Framework\Mail\TransportInterface
+     * @var \Magento\Framework\Mail\MessageInterface
+     */
+    protected $_message;
+
+    /**
+     * @var \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
      */
     protected $_transport;
 
     /**
+     * @var \Shockwavemk\Mail\Base\Model\Storeages\StoreageInterface
+     */
+    protected $_storeage;
+
+    /**
+     * @param \Shockwavemk\Mail\Base\Model\Config $config
      * @param \Magento\Framework\Mail\MessageInterface $message
-     * @param null $parameters
-     * @throws \InvalidArgumentException
+     * @param \Magento\Framework\ObjectManagerInterface $manager
+     * @throws \Magento\Framework\Exception\MailException
      */
     public function __construct(
-        \Shockwavemk\Mail\Model\Config $config,
+        \Shockwavemk\Mail\Base\Model\Config $config,
         \Magento\Framework\Mail\MessageInterface $message,
-        $parameters = null)
+        \Magento\Framework\ObjectManagerInterface $manager,
+        \Magento\Framework\Stdlib\DateTime $dateTime
+    )
     {
-        try
-        {
+        try {
+            $this->_message = $message;
+            $this->_dateTime = $dateTime;
+
             $transportClassName = $config->getTransportClassName();
-            $this->_transport = new $transportClassName($config, $message, $parameters);
-        }
-        catch(Exception $e)
-        {
-            throw $e; // TODO
+            $this->_transport = $manager->get($transportClassName);
+
+        } catch (\Exception $e) {
+            throw new \Magento\Framework\Exception\MailException(
+                new \Magento\Framework\Phrase($e->getMessage()),
+                $e);
         }
     }
 
     /**
      * Send a mail using this transport
      *
-     * @return void
+     * @return \Shockwavemk\Mail\Base\Model\Transports\Base
      * @throws \Magento\Framework\Exception\MailException
      */
     public function sendMessage()
     {
         try {
+            // First: Send message with given transport
             $this->_transport->sendMessage();
+
+            // Second: Create a mail instance to store
+            $this
+                ->getMail()
+                ->updateWithTransport($this->_transport)
+                ->save();
+
         } catch (\Exception $e) {
-            throw new \Magento\Framework\Exception\MailException(new \Magento\Framework\Phrase($e->getMessage()), $e);
+            throw new \Magento\Framework\Exception\MailException(
+                new \Magento\Framework\Phrase($e->getMessage()),
+                $e);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return \Shockwavemk\Mail\Base\Model\Mail
+     */
+    public function getMail()
+    {
+        return $this->_transport->getMail();
+    }
+
+    /**
+     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     * @return TransportInterface
+     */
+    public function setMail($mail)
+    {
+        $this->_transport->setMail($mail);
+        return $this;
+    }
+
+    /**
+     * @return \Shockwavemk\Mail\Base\Model\Mail\MessageInterface
+     */
+    public function getMessage()
+    {
+        return $this->_transport->getMessage();
     }
 }

@@ -1,0 +1,43 @@
+<?php
+/**
+ * Copyright 2016 Shockwave-Design - J. & M. Kramer, all rights reserved.
+ * See LICENSE.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var \Shockwavemk\Mail\Base\Block\Adminhtml\Mail\Send\Form $this */
+?>
+<form class="form form-edit-account" action="<?php /* @escapeNotVerified */ echo $block->getUrl('customer/mail/sendPost', ['id' => $this->getMail()->getId()]) ?>" method="post" id="form-validate" enctype="multipart/form-data" data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>" autocomplete="off">
+    <fieldset class="fieldset info">
+        <?php echo $block->getBlockHtml('formkey')?>
+        <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('"Send to" configuration') ?></span></legend><br>
+
+        <div class="field choice">
+            <input type="radio" name="resend_type" id="resend-to-mail" value="resend" title="<?php /* @escapeNotVerified */ echo __('Resend stored mail') ?>"<?php if (true): ?> checked="checked"<?php endif; ?> class="radio"/>
+            <label class="label" for="resend-to-mail"><span><?php /* @escapeNotVerified */ echo __('Resend stored mail') ?></span></label>
+        </div>
+
+        <div class="field choice">
+            <input type="radio" name="resend_type" id="recalculate-and-send-to-mail" value="recalculate" title="<?php /* @escapeNotVerified */ echo __('Recalculate mail and send') ?>"<?php if (true): ?> checked="checked"<?php endif; ?> class="radio"/>
+            <label class="label" for="recalculate-and-send-to-mail"><span><?php /* @escapeNotVerified */ echo __('Recalculate mail and send') ?></span></label>
+        </div>
+
+        <div class="field email required">
+            <label class="label" for="email"><span><?php /* @escapeNotVerified */ echo __('Send to email') ?></span></label>
+            <div class="control">
+                <input type="email" name="email" id="email" value="<?php $recipients = $block->getMail()->getRecipients(); echo reset($recipients) ?>" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
+            </div>
+        </div>
+
+    </fieldset>
+
+    <div class="actions-toolbar">
+        <div class="primary">
+            <button type="submit" class="action save primary" title="<?php /* @escapeNotVerified */ echo __('Send') ?>"><span><?php /* @escapeNotVerified */ echo __('Send') ?></span></button>
+        </div>
+        <div class="secondary">
+            <a class="action back" href="<?php echo $block->escapeUrl($block->getBackUrl()) ?>"><span><?php /* @escapeNotVerified */ echo __('Go back') ?></span></a>
+        </div>
+    </div>
+</form>

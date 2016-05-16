@@ -6,6 +6,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'Shockwavemk_Mail',
+    'Shockwavemk_Mail_Base',
     __DIR__
 );
