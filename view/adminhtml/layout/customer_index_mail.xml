@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
+    <container name="root">
+        <block class="Magento\Backend\Block\Widget\Grid" name="customer.mail.edit.tab">
+            <arguments>
+                <argument name="dataSource" xsi:type="object">Shockwavemk\Mail\Base\Model\ResourceModel\Mail\Collection</argument>
+                <argument name="id" xsi:type="string">mailGrid</argument>
+                <argument name="use_ajax" xsi:type="string">true</argument>
+                <argument name="default_sort" xsi:type="string">added_at</argument>
+                <argument name="default_dir" xsi:type="string">DESC</argument>
+                <argument name="save_parameters_in_session" xsi:type="string">1</argument>
+                <argument name="grid_url" xsi:type="url" path="*/*/mail">
+                    <param name="_current">1</param>
+                </argument>
+            </arguments>
+            <block class="Magento\Backend\Block\Widget\Grid\ColumnSet" as="grid.columnSet" name="customer.mail.edit.tab.columnSet">
+                <arguments>
+                    <argument name="empty_text" xsi:type="string" translate="true">No Items Found</argument>
+                </arguments>
+                <block class="Magento\Backend\Block\Widget\Grid\Column" as="subject">
+                    <arguments>
+                        <argument name="header" xsi:type="string" translate="true">Subject</argument>
+                        <argument name="index" xsi:type="string">subject</argument>
+                        <argument name="type" xsi:type="string">text</argument>
+                        <argument name="id" xsi:type="string">subject</argument>
+                        <argument name="filter" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Widget\Grid\Column\Filter\Text</argument>
+                        <argument name="column_css_class" xsi:type="string">col-name</argument>
+                        <argument name="header_css_class" xsi:type="string">col-name</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Backend\Block\Widget\Grid\Column" as="template_identifier">
+                    <arguments>
+                        <argument name="header" xsi:type="string" translate="true">Template</argument>
+                        <argument name="index" xsi:type="string">template_identifier</argument>
+                        <argument name="type" xsi:type="string">text</argument>
+                        <argument name="id" xsi:type="string">template_identifier</argument>
+                        <argument name="renderer" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Edit\Tab\Mail\Grid\Renderer\Template</argument>
+                        <argument name="filter" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Widget\Grid\Column\Filter\Text</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Backend\Block\Widget\Grid\Column\Multistore" as="store">
+                    <arguments>
+                        <argument name="header" xsi:type="string" translate="true">Store</argument>
+                        <argument name="index" xsi:type="string">store_id</argument>
+                        <argument name="type" xsi:type="string">store</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Backend\Block\Widget\Grid\Column" as="send_at">
+                    <arguments>
+                        <argument name="header" xsi:type="string" translate="true">Sent at</argument>
+                        <argument name="index" xsi:type="string">sent_at</argument>
+                        <argument name="gmtoffset" xsi:type="string">1</argument>
+                        <argument name="type" xsi:type="string">datetime</argument>
+                        <argument name="id" xsi:type="string">sent_at</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Backend\Block\Widget\Grid\Column" as="sent">
+                    <arguments>
+                        <argument name="header" xsi:type="string" translate="true">Sent</argument>
+                        <argument name="index" xsi:type="string">sent</argument>
+                        <argument name="type" xsi:type="string">number</argument>
+                        <argument name="id" xsi:type="string">sent</argument>
+                        <argument name="renderer" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Edit\Tab\Mail\Grid\Renderer\Sent</argument>
+                        <argument name="filter" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Widget\Grid\Column\Filter\Text</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Backend\Block\Widget\Grid\Column" as="recipients">
+                    <arguments>
+                        <argument name="header" xsi:type="string" translate="true">Recipients</argument>
+                        <argument name="index" xsi:type="string">recipients</argument>
+                        <argument name="type" xsi:type="string">longtext</argument>
+                        <argument name="id" xsi:type="string">recipients</argument>
+                        <argument name="renderer" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Edit\Tab\Mail\Grid\Renderer\Recipients</argument>
+                        <argument name="filter" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Widget\Grid\Column\Filter\Text</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Backend\Block\Widget\Grid\Column" as="language">
+                    <arguments>
+                        <argument name="header" xsi:type="string" translate="true">Language</argument>
+                        <argument name="index" xsi:type="string">language_code</argument>
+                        <argument name="type" xsi:type="string">text</argument>
+                        <argument name="id" xsi:type="string">language_code</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Backend\Block\Widget\Grid\Column" as="action">
+                    <arguments>
+                        <argument name="header" xsi:type="string" translate="true">Actions</argument>
+                        <argument name="index" xsi:type="string">action</argument>
+                        <argument name="type" xsi:type="string">text</argument>
+                        <argument name="id" xsi:type="string">entity_id</argument>
+                        <argument name="renderer" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Edit\Tab\Mail\Grid\Renderer\Action</argument>
+                        <argument name="filter" xsi:type="string">Shockwavemk\Mail\Base\Block\Adminhtml\Widget\Grid\Column\Filter\Text</argument>
+                    </arguments>
+                </block>
+            </block>
+            <block class="Magento\Framework\View\Element\Template" as="grid.js">
+                <arguments>
+                    <argument name="js_object_name" xsi:type="string">mailGridJsObject</argument>
+                    <argument name="template" xsi:type="string">Shockwavemk_Mail_Base::customer/edit/tab/mail.phtml</argument>
+                </arguments>
+            </block>
+        </block>
+        <block class="Magento\Catalog\Block\Adminhtml\Product\Composite\Configure" template="Magento_Catalog::catalog/product/composite/configure.phtml" name="configure.popup"/>
+    </container>
+</layout>

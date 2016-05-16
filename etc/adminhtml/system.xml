@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Copyright © 2015 Magento. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright 2016 Shockwave-Design - J. & M. Kramer, all rights reserved.
+ * See LICENSE.txt for license details.
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Config/etc/system_file.xsd">
@@ -11,7 +11,41 @@
             <group id="smtp">
                 <field id="type" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Connection type</label>
-                    <source_model>Shockwavemk\Mail\Model\Config\Source\Type</source_model>
+                    <source_model>Shockwavemk\Mail\Base\Model\Config\Source\Type</source_model>
+                </field>
+                <field id="storeage" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Storeage type</label>
+                    <source_model>Shockwavemk\Mail\Base\Model\Config\Source\Storeage</source_model>
+                </field>
+                <field id="cache_limit" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cache limit for local storeage</label>
+                </field>
+                <field id="upload_limit" translate="label" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Upload limit for local storeage</label>
+                </field>
+                <field id="host_spool_folder_path" translate="label" type="text" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Host Spooler Folder Path</label>
+                    <comment><![CDATA[/var/www/html/var/spool]]></comment>
+                </field>
+                <field id="host_spool_folder_retry_limit" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Host Spooler File-Access Retry Limit</label>
+                    <comment><![CDATA[5]]></comment>
+                </field>
+                <field id="test_mode" translate="label" sortOrder="15" type="select" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable test mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="tracking_enabled" translate="label" sortOrder="16" type="select" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable tracking</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="tracking_clicks_enabled" translate="label" sortOrder="17" type="select" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable tracking of clicks</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="tracking_opens_enabled" translate="label" sortOrder="18" type="select" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable tracking of mail open</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
         </section>
