@@ -13,8 +13,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $setup->startSetup();
         if (version_compare($context->getVersion(), '1.0.1') < 0) {
             $this->createMailMainTable($setup);
-            $this->createMailLinkTable($setup);
-            $this->createMailLinkTypeTable($setup);
         }
 
         $setup->endSetup();
@@ -164,68 +162,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
             'customer_id'
         )->setComment(
             'Mail main table'
-        );
-        $installer->getConnection()->createTable($table);
-    }
-
-    /**
-     * @param $installer
-     */
-    protected function createMailLinkTable(SetupInterface $installer)
-    {
-        $table = $installer->getConnection()->newTable(
-            $installer->getTable('shockwavemk_mail_entity_link')
-        )->addColumn(
-            'entity_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Mail ID'
-        )->addColumn(
-            'type_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
-            'Linked object type'
-        )->addColumn(
-            'link_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
-            'Linked object ID'
-        )->addIndex(
-            $installer->getIdxName('mail', 'link_id'),
-            'link_id'
-        )->addIndex(
-            $installer->getIdxName('mail', 'type_id'),
-            'type_id'
-        )->setComment(
-            'Mail link table'
-        );
-        $installer->getConnection()->createTable($table);
-    }
-
-    /**
-     * @param $installer
-     */
-    protected function createMailLinkTypeTable(SetupInterface $installer)
-    {
-        $table = $installer->getConnection()->newTable(
-            $installer->getTable('shockwavemk_mail_link_type')
-        )->addColumn(
-            'entity_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Mail Type ID'
-        )->addColumn(
-            'type_class',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            \Magento\Framework\DB\Ddl\Table::MAX_TEXT_SIZE,
-            ['nullable' => false],
-            'Decoupled linked object class'
-        )->setComment(
-            'Mail link type table'
         );
         $installer->getConnection()->createTable($table);
     }

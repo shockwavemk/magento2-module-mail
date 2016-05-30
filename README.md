@@ -1,4 +1,11 @@
-# Mail 
+# Magento 2 enhanced mailing module
 
- * Copyright © 2015 Martin Kramer. All rights reserved.
- * See LICENSE.txt for license details.
+This module extends the capabilities of Magento 2 mailing.
+
+## Installation
+
+- TODO
+
+## Features
+
+- TODO
