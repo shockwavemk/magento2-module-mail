@@ -5,8 +5,7 @@
     },
     "type": "magento2-module",
     "license": [
-        "UNLICENSED",
-        "Copyright 2016 Shockwave-Design - J. & M. Kramer, all rights reserved."
+        "Apache-2.0"
     ],
     "autoload": {
         "files": [
