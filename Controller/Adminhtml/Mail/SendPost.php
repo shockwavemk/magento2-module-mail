@@ -30,20 +30,17 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
      * @param StoreManagerInterface $storeManager
      * @param TransportBuilder $transportBuilder
      * @param Customer $customer
-     * @param \Magento\Framework\ObjectManagerInterface $manager
      */
     public function __construct(
         Context $context,
         StoreManagerInterface $storeManager,
         TransportBuilder $transportBuilder,
-        Customer $customer,
-        \Magento\Framework\ObjectManagerInterface $manager
+        Customer $customer
     )
     {
         $this->transportBuilder = $transportBuilder;
         $this->storeManager = $storeManager;
         $this->customer = $customer;
-        $this->manager = $manager;
 
         parent::__construct($context);
     }
