@@ -6,6 +6,8 @@
 
 namespace Shockwavemk\Mail\Model\Transports;
 
+use Shockwavemk\Mail\Base\Model\Transports\Base;
+
 class DebugTransport extends Base implements \Magento\Framework\Mail\TransportInterface
 {
     /**
