@@ -13,7 +13,7 @@
                 <storeage>debug</storeage>
                 <cache_limit>100</cache_limit>
                 <upload_limit>3</upload_limit>
-                <host_spool_folder_path>/var/www/sites/html/var/spool</host_spool_folder_path>
+                <host_spool_folder_path>/var/www/html/var/spool</host_spool_folder_path>
                 <host_spool_folder_retry_limit>5</host_spool_folder_retry_limit>
             </smtp>
         </system>
