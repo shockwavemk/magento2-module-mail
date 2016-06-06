@@ -63,6 +63,11 @@ On succeed, install the module via bin/magento console.
 
 ### Mail sending over configurable plugins
 
+Transport and storeage configuration can be easily done via store config.
+Installed plug-ins for transport and storeage can be selected at this point.
+
+![](./docs/magento2-config-mail-enhancement.png)
+
 Supported vendors (so far):
 
 Transport:
@@ -95,17 +100,38 @@ The default storeage stores all files sent by magento2 in a so called
 "spool" folder. The mail data will stay at this local server path until 
 it is deleted or moved.
 
+![](./docs/local-storeage-for-mails-as-json.png)
+
+With an installed storeage plugin a cronjob will automatically take care
+to move all stored mails to your secure external storeage location.
+Even if your server is reinstalled or you have to clean up your magento installation:
+The conversation with you customers is safe.
 
 
-### Enhance admin customer management by transactional mail review
+
+### Enhanced admin customer management by transactional mail review
+
+The customer administration is enhanced by an additional menu tab.
+
+Select customer in main admin menu:
+
+![](./docs/magento2-customer-menu.png)
+
+
+
 
 
 
 
 ### Re-Sending of transactional mails. Re-Calculated or Re-Sending of stored mail data
 
+This extension keeps track of each email sent from store.
+For each of them it is possible to trigger an resending.
+
+![](./docs/magento2-mail-resending-and-recalculation.png)
 
 
+### Attachment handling and storeage of sent files - done right!
 
-### Attachment handling, storeage of sent files
+
 
