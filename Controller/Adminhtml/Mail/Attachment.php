@@ -30,6 +30,7 @@ class Attachment extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
         $attachments = $mail->getAttachments();
 
         /** @var \Shockwavemk\Mail\Base\Model\Mail\Attachment $attachment */
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if(empty($attachment = $attachments[$localPath])) {
 
             $this->messageManager->addError(
@@ -78,7 +79,7 @@ class Attachment extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
             true
         );
 
-        $this->getResponse()->setHeader('Content-Disposition', $attachment->getDisposition() . '; filename=' .  basename($attachment->getFilePath()));
+        $this->getResponse()->setHeader('Content-Disposition', $attachment->getDisposition() . '; filename=' .  basename($attachment->getFileName()));
 
         $this->getResponse()->clearBody();
         $this->getResponse()->sendHeaders();

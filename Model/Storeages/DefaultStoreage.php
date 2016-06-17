@@ -60,7 +60,7 @@ class DefaultStoreage implements StoreageInterface
         $messageHtml = quoted_printable_decode($mail->getMessage()->getBodyHtml(true));
 
         $this->prepareFolderPath(
-            $this->getMailFolderPath($mail)
+            $this->getMailLocalFilePath($mail,'')
         );
 
         // try to store message to filesystem
@@ -112,12 +112,12 @@ class DefaultStoreage implements StoreageInterface
      * @param \Shockwavemk\Mail\Base\Model\Mail $mail
      * @return string
      */
-    protected function getMailFolderPath($mail)
+    public function getMailFolderPathById($mailId)
     {
         // store message in temporary file system spooler
         $hostTempFolderPath = $this->_config->getHostSpoolerFolderPath();
 
-        return $hostTempFolderPath . DIRECTORY_SEPARATOR . $mail->getId();
+        return $hostTempFolderPath . DIRECTORY_SEPARATOR . $mailId;
     }
 
     /**
@@ -137,15 +137,20 @@ class DefaultStoreage implements StoreageInterface
 
         /** @noinspection LoopWhichDoesNotLoopInspection */
         for ($i = 0; $i < $this->_config->getHostRetryLimit(); $i++) {
-            /* We try an exclusive creation of the file. This is an atomic operation, it avoid locking mechanism */
+            /* We try an exclusive creation of the file.
+             * This is an atomic operation, it avoid locking mechanism
+             */
             $fp = @fopen($filePath, 'x');
 
-            if (false === fwrite($fp, $data)) {
-                return false;
-            }
-            fclose($fp);
+            if($fp !== false) {
+                if (false === fwrite($fp, $data)) {
+                    return false;
+                }
 
-            return $filePath;
+                fclose($fp);
+
+                return $filePath;
+            }
         }
 
         throw new \Exception('Unable to create a file for enqueuing Message');
@@ -260,7 +265,7 @@ class DefaultStoreage implements StoreageInterface
         $mailJson = json_encode($mail);
 
         $this->prepareFolderPath(
-            $this->getMailFolderPath($mail)
+            $this->getMailFolderPathById($mail->getId())
         );
 
         // try to store message to filesystem
@@ -328,7 +333,7 @@ class DefaultStoreage implements StoreageInterface
     {
         // get combined files list: remote and local
 
-        $mergedFolerFileList = $this->getMailLocalFolderFileList($mail);
+        $folderFileList = $this->getMailLocalFolderFileList($mail);
 
         $attachments = [];
 
@@ -336,7 +341,9 @@ class DefaultStoreage implements StoreageInterface
             return $attachments;
         }
 
-        foreach ($mergedFolerFileList as $filePath => $fileMetaData) {
+        foreach ($folderFileList as $filePath => $fileMetaData) {
+
+            $filePath = $fileMetaData['path'];
 
             /** @var \Shockwavemk\Mail\Base\Model\Mail\Attachment $attachment */
             $attachment = $this->_objectManager
@@ -347,9 +354,7 @@ class DefaultStoreage implements StoreageInterface
 
             // transfer all meta data into attachment object
             foreach ($fileMetaData as $attributeKey => $attributeValue) {
-
                 $attachment->setData($attributeKey, $attributeValue);
-
             }
 
             $attachments[$filePath] = $attachment;
@@ -440,7 +445,7 @@ class DefaultStoreage implements StoreageInterface
         $binaryData = $attachment->getBinary();
         $mail = $attachment->getMail();
 
-        $folderPath = $this->getMailFolderPath($mail) .
+        $folderPath = $this->getMailFolderPathById($mail->getId()) .
             DIRECTORY_SEPARATOR .
             self::ATTACHMENT_PATH;
 
@@ -448,15 +453,18 @@ class DefaultStoreage implements StoreageInterface
         $this->prepareFolderPath($folderPath);
 
         // try to store message to filesystem
-        return $this->storeFile(
+        $filePath = $this->storeFile(
             $binaryData,
             $this->getMailLocalFilePath(
                 $mail,
                 DIRECTORY_SEPARATOR .
                 self::ATTACHMENT_PATH .
-                $attachment->getFilePath()
+                DIRECTORY_SEPARATOR .
+                basename($attachment->getFilePath())
             )
         );
+        
+        $attachment->setFilePath($filePath);
     }
 
     /**

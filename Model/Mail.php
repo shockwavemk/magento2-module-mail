@@ -188,6 +188,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     {
         /** @var \Shockwavemk\Mail\Base\Model\Mail\AttachmentInterface[] $currentAttachments */
         $attachments = $this->getAttachments();
+        $attachment->setMail($this);
 
         $attachments[$attachment->getFileName()] = $attachment;
 
@@ -434,7 +435,18 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      */
     public function jsonSerialize()
     {
-        return $this->getData();
+        $data = $this->getData();
+        $attachmentsSerialized = [];
+
+        if(!empty($this->getAttachments())) {
+            foreach ($this->getAttachments() as $attachment) {
+                $attachmentsSerialized[] = $attachment->jsonSerialize();
+            }
+        }
+
+        $data['attachments'] = $attachmentsSerialized;
+
+        return $data;
     }
 
     public function getDeliveryTime()
