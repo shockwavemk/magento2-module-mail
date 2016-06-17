@@ -29,9 +29,6 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
      */
     const ZEND_MAIL_ATTACHMENT_DEFAULT_FILENAME = 'attachment.pdf';
 
-    /** @var \Shockwavemk\Mail\Base\Model\Config */
-    protected $config;
-
     /** @var ScopeConfigInterface */
     protected $scopeConfig;
 
@@ -40,7 +37,6 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
 
     /**
      * Attachment constructor.
-     * @param \Shockwavemk\Mail\Base\Model\Config $config
      * @param ScopeConfigInterface $scopeConfig
      * @param \Shockwavemk\Mail\Base\Model\Storeages\Base $storeage
      * @param \Magento\Framework\Model\Context $context
@@ -49,19 +45,16 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
      */
-    public function __construct(\Shockwavemk\Mail\Base\Model\Config $config,
-                                ScopeConfigInterface $scopeConfig,
-                                \Shockwavemk\Mail\Base\Model\Storeages\Base $storeage,
-                                \Magento\Framework\Model\Context $context,
-                                \Magento\Framework\Registry $registry,
-                                \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-                                \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-                                array $data = [])
+    public function __construct(
+        \Shockwavemk\Mail\Base\Model\Storeages\Base $storeage,
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = [])
     {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
 
-        $this->config = $config;
-        $this->scopeConfig = $scopeConfig;
         $this->storeage = $storeage;
     }
 
@@ -74,6 +67,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
     {
         $data = $this->getData();
         $data['binary'] = '';
+        $data['mail'] = $this->getMail()->getId();
 
         return $data;
     }
@@ -105,12 +99,14 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
     public function getBinary()
     {
         if (empty($this->getData('binary'))) {
+            
+            $attachmentBinary = file_get_contents(
+                $this->getFilePath()
+            );            
+
             $this->setData(
                 'binary',
-                $this->storeage->loadAttachment(
-                    $this->getMail(),
-                    $this->getFilePath()
-                )
+                $attachmentBinary
             );
         }
 

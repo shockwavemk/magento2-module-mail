@@ -235,11 +235,11 @@ class Base implements StoreageInterface
      * @return string
      * @throws MailException
      */
-    public function getTempFilePath()
+    public function getMailFolderPathById($mailId)
     {
         try {
 
-            return $this->_storage->getTempFilePath();
+            return $this->_storage->getMailFolderPathById($mailId);
 
         } catch (\Exception $e) {
 

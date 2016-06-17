@@ -82,6 +82,10 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
         if(empty($this->_mail))
         {
             $this->_mail = $this->objectManager->get('Shockwavemk\Mail\Base\Model\Mail');
+
+            $attachment = $this->objectManager->get('Shockwavemk\Mail\Base\Model\Mail\Attachment');
+            
+            $this->_mail->addAttachment($attachment);
         }
 
         return $this->_mail;

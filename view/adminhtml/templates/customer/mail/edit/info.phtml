@@ -177,7 +177,7 @@
                 /** @var \Shockwavemk\Mail\Base\Model\Mail\Attachment $attachment */
                 ?>
             <tr>
-                <td class="value"><a href="<?php echo $this->getDownloadUrl($attachment) ?>"><?php echo $attachment->getFilePath() ?></a></td>
+                <td class="value"><a href="<?php echo $this->getDownloadUrl($attachment) ?>"><?php echo $attachment->getFileName() ?></a></td>
             </tr>
             <?php endforeach; ?>
             <tr>

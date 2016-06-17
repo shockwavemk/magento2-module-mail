@@ -80,11 +80,6 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
 
         try {
 
-            /** @var AttachmentInterface $attachment */
-            foreach($this->_mail->getAttachments() as $attachment) {
-                $attachment->getBinary();
-            }
-
             $this->_mail->setParentId(
                 $this->_mail->getId()
             );
