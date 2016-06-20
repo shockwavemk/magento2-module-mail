@@ -75,17 +75,25 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     }
 
     /**
+     * Get mail 
+     * 
      * @return \Shockwavemk\Mail\Base\Model\Mail
      */
     public function getMail()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if(empty($this->_mail))
         {
-            $this->_mail = $this->objectManager->get('Shockwavemk\Mail\Base\Model\Mail');
+            $this->_mail = $this->objectManager
+                ->get('Shockwavemk\Mail\Base\Model\Mail');
 
-            $attachment = $this->objectManager->get('Shockwavemk\Mail\Base\Model\Mail\Attachment');
-            
-            $this->_mail->addAttachment($attachment);
+            /** @var \Shockwavemk\Mail\Base\Model\Mail\AttachmentCollection $attachmentCollection */
+            $attachmentCollection = $this->objectManager
+                ->get('Shockwavemk\Mail\Base\Model\Mail\AttachmentCollection');
+
+            foreach($attachmentCollection as $attachment) {
+                $this->_mail->addAttachment($attachment);
+            }
         }
 
         return $this->_mail;
@@ -204,7 +212,10 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
 
         $this->updateMailWithTransportData();
 
-        $mailTransport->setMail($this->getMail());
+        
+        $mailTransport->setMail(
+            $this->getMail()
+        );
 
         $this->reset();
         return $mailTransport;

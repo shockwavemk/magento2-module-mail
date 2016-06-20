@@ -6,7 +6,7 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
-    <preference for="Magento\Framework\Mail\Transport" type="Shockwavemk\Mail\Base\Model\Transports\Base" />
-    <preference for="Magento\Framework\Mail\Message" type="Shockwavemk\Mail\Base\Model\Mail\Message" />
-    <preference for="Magento\Framework\Mail\Template\TransportBuilder" type="Shockwavemk\Mail\Base\Model\Template\TransportBuilder" />
+    <preference for="Magento\Framework\Mail\Transport" type="\Shockwavemk\Mail\Base\Model\Transports\Base" />
+    <preference for="Magento\Framework\Mail\Message" type="\Shockwavemk\Mail\Base\Model\Mail\Message" />
+    <preference for="Magento\Framework\Mail\Template\TransportBuilder" type="\Shockwavemk\Mail\Base\Model\Template\TransportBuilder" />
 </config>

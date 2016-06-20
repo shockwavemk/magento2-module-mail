@@ -330,17 +330,15 @@ class DefaultStoreage implements StoreageInterface
      * @return \Shockwavemk\Mail\Base\Model\Mail\Attachment[]
      */
     public function getAttachments($mail)
-    {
-        // get combined files list: remote and local
-
+    {        
+        if(empty($mail->getId())) {
+            return [];
+        }
+        
         $folderFileList = $this->getMailLocalFolderFileList($mail);
 
         $attachments = [];
-
-        if(empty($mail->getId())) {
-            return $attachments;
-        }
-
+        
         foreach ($folderFileList as $filePath => $fileMetaData) {
 
             $filePath = $fileMetaData['path'];
