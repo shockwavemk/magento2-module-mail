@@ -87,6 +87,8 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
             /** @var MessageInterface $message */
             $message = $this->_mail->getMessage();
 
+            $this->_mail->getAttachments();
+
             $this->_mail->setId(null);
 
             if(!empty($email)) {
