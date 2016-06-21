@@ -66,10 +66,9 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
             $this->_transport->sendMessage();
 
             // Second: Create a mail instance to store
-            $this
-                ->getMail()
-                ->updateWithTransport($this->_transport)
-                ->save();
+            $mail = $this->getMail();
+            $mail->updateWithTransport($this->_transport);
+            $mail->save();
 
         } catch (\Exception $e) {
             throw new \Magento\Framework\Exception\MailException(
