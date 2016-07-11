@@ -44,7 +44,7 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
             $this->_dateTime = $dateTime;
 
             $transportClassName = $config->getTransportClassName();
-            $this->_transport = $manager->get($transportClassName);
+            $this->_transport = $manager->create($transportClassName, ['message' => $message]);
 
         } catch (\Exception $e) {
             throw new \Magento\Framework\Exception\MailException(

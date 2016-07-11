@@ -433,7 +433,8 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         $this
             ->setSubject($transport->getMessage()->getSubject())
             ->setMessage($transport->getMessage())
-            ->setRecipients($transport->getMessage()->getRecipients());
+            ->setRecipients($transport->getMessage()->getRecipients())
+            ->setId(null);
 
         return $this;
     }
