@@ -3,17 +3,17 @@
  * Copyright 2016 Shockwave-Design - J. & M. Kramer, all rights reserved.
  * See LICENSE.txt for license details.
  */
-namespace Shockwavemk\Mail\Base\Model\Storeages;
+namespace Shockwavemk\Mail\Base\Model\Storages;
 use Magento\Framework\Exception\MailException;
 use Magento\Framework\Phrase;
 use Shockwavemk\Mail\Base\Model\Mail\AttachmentInterface;
 
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
-class Base implements StoreageInterface
+class Base implements StorageInterface
 {
     /**
-     * @var \Shockwavemk\Mail\Base\Model\Storeages\StoreageInterface
+     * @var \Shockwavemk\Mail\Base\Model\Storages\StorageInterface
      */
     protected $_storage;
 

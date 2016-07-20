@@ -3,21 +3,21 @@
  * Copyright 2016 Shockwave-Design - J. & M. Kramer, all rights reserved.
  * See LICENSE.txt for license details.
  */
-namespace Shockwavemk\Mail\Base\Model\Storeages;
+namespace Shockwavemk\Mail\Base\Model\Storages;
+use Shockwavemk\Mail\Base\Model\Mail;
 use Shockwavemk\Mail\Base\Model\Mail\AttachmentInterface;
-use Shockwavemk\Mail\Base\Model\Mail\MessageInterface;
 
 /**
- * Mail Storeage interface
+ * Mail Storage interface
  *
  * @api
  */
-interface StoreageInterface
+interface StorageInterface
 {
     /**
      * TODO
      *
-     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     * @param Mail $mail
      *
      * @return $id
      * @throws \Magento\Framework\Exception\MailException
@@ -27,7 +27,7 @@ interface StoreageInterface
     /**
      * TODO
      *
-     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     * @param Mail $mail
      * @return \Magento\Framework\Mail\MessageInterface
      */
     public function loadMessage($mail);
@@ -35,7 +35,7 @@ interface StoreageInterface
     /**
      * TODO
      *
-     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     * @param Mail $mail
      * @return  $id
      */
     public function saveMail($mail);
@@ -45,14 +45,14 @@ interface StoreageInterface
      *
      * @param int $mailId
      *
-     * @return \Shockwavemk\Mail\Base\Model\Mail
+     * @return Mail
      */
     public function loadMail($mailId);
 
     /**
      * TODO
      *
-     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     * @param Mail $mail
      *
      * @return AttachmentInterface[]
      */
@@ -61,7 +61,7 @@ interface StoreageInterface
     /**
      * TODO
      *
-     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     * @param Mail $mail
      * @param string $path
      *
      * @return AttachmentInterface
@@ -76,7 +76,7 @@ interface StoreageInterface
     public function saveAttachment($attachment);
 
     /**
-     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     * @param Mail $mail
      * @return $this
      */
     public function saveAttachments($mail);

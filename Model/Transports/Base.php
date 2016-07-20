@@ -22,7 +22,7 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
     protected $_transport;
 
     /**
-     * @var \Shockwavemk\Mail\Base\Model\Storeages\StoreageInterface
+     * @var \Shockwavemk\Mail\Base\Model\Storages\StorageInterface
      */
     protected $_storeage;
 

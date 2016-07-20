@@ -103,7 +103,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     /** @var \Magento\Store\Model\StoreManagerInterface */
     protected $_storeManager;
 
-    /** @var \Shockwavemk\Mail\Base\Model\Storeages\Base */
+    /** @var \Shockwavemk\Mail\Base\Model\Storages\Base */
     protected $_storeage;
 
     /** @var \Magento\Framework\Stdlib\DateTime\DateTime */
@@ -136,7 +136,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      * @param TimezoneInterface $timezone
      * @param \Magento\Framework\ObjectManagerInterface $manager
      * @param Config $config
-     * @param Storeages\Base $storeage
+     * @param Storages\Base $storeage
      * @param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -152,7 +152,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      * @param TimezoneInterface $timezone
      * @param \Magento\Framework\ObjectManagerInterface $manager
      * @param Config $config
-     * @param Storeages\Base $storeage
+     * @param Storages\Base $storeage
      * @param array $data
      */
     public function __construct(
@@ -168,7 +168,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         TimezoneInterface $timezone,
         \Magento\Framework\ObjectManagerInterface $manager,
         \Shockwavemk\Mail\Base\Model\Config $config,
-        \Shockwavemk\Mail\Base\Model\Storeages\Base $storeage,
+        \Shockwavemk\Mail\Base\Model\Storages\Base $storeage,
         array $data = []
     )
     {
@@ -185,7 +185,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     }
 
     /**
-     * @return Storeages\Base
+     * @return Storages\Base
      */
     public function getStoreage()
     {

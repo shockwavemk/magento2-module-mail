@@ -25,13 +25,13 @@
                     <class>Magento\Framework\Mail\Transport</class>
                 </default>
             </types>
-            <storeages>
+            <storages>
                 <default>
                     <label>Default</label>
                     <value>default</value>
-                    <class>Shockwavemk\Mail\Base\Model\Storeages\DefaultStoreage</class>
+                    <class>Shockwavemk\Mail\Base\Model\Storages\DefaultStorage</class>
                 </default>
-            </storeages>
+            </storages>
         </transport>
     </default>
 </config>

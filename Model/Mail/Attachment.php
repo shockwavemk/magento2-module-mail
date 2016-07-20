@@ -8,7 +8,7 @@ namespace Shockwavemk\Mail\Base\Model\Mail;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 use JsonSerializable;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Shockwavemk\Mail\Base\Model\Storeages\Base;
+use Shockwavemk\Mail\Base\Model\Storages\Base;
 use Zend_Mime;
 use Zend_Mime_Part;
 
@@ -34,7 +34,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
     protected $scopeConfig;
 
     /** @var Base */
-    protected $storeage;
+    protected $storage;
 
     /**
      * Attachment constructor.

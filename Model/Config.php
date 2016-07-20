@@ -15,8 +15,8 @@ class Config
     const XML_PATH_TYPE = 'system/smtp/type';
     const XML_PATH_TRANSPORT_TYPES = 'transport/types';
 
-    const XML_PATH_STOREAGE = 'system/smtp/storeage';
-    const XML_PATH_STOREAGE_TYPES = 'transport/storeages';
+    const XML_PATH_STOREAGE = 'system/smtp/storage';
+    const XML_PATH_STOREAGE_TYPES = 'transport/storages';
     const XML_PATH_SPOOLER_FOLDER_PATH = 'system/smtp/host_spool_folder_path';
     const XML_PATH_SPOOLER_RETRY_LIMIT = 'system/smtp/host_spool_folder_retry_limit';
     const XML_PATH_MAIL_TEST_MODE = 'system/smtp/test_mode';
