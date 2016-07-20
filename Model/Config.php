@@ -112,6 +112,9 @@ class Config
     // Storage
 
     /**
+     * This path is used to store (temporary) files on local server
+     * e.g. <magento root>/pub/media/emails
+     *
      * @return mixed
      */
     public function getHostSpoolerFolderPath()
@@ -120,6 +123,8 @@ class Config
     }
 
     /**
+     * A configurable limit how often a write access is tried on local file system on write
+     *
      * @return mixed
      */
     public function getHostRetryLimit()
@@ -128,7 +133,9 @@ class Config
     }
 
     /**
-     * @return mixed
+     * Returns string class name of storage class
+     *
+     * @return string
      */
     public function getStorageType()
     {
@@ -136,7 +143,7 @@ class Config
     }
 
     /**
-     * @return mixed
+     * @return string[]
      */
     public function getStorageTypes()
     {
@@ -160,7 +167,9 @@ class Config
     }
 
     /**
-     * @return mixed
+     * If test mode enabled, emails are built and stored, not sent
+     * 
+     * @return bool
      */
     public function getTestMode()
     {
@@ -168,7 +177,9 @@ class Config
     }
 
     /**
-     * @return mixed
+     * Depending on mail transport vendor, all links in outgoing messages are replaced by tracking links
+     * 
+     * @return bool
      */
     public function getTrackingEnabled()
     {
@@ -176,7 +187,7 @@ class Config
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getTrackingClicksEnabled()
     {
@@ -184,7 +195,7 @@ class Config
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getTrackingOpensEnabled()
     {

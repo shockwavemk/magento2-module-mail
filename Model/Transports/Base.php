@@ -29,6 +29,8 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
     protected $_transport;
 
     /**
+     * Selects transport class name from config and creates a new transport object with given message
+     *
      * @param Config $config
      * @param MessageInterface $message
      * @param ObjectManagerInterface $manager
@@ -43,7 +45,10 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
         try {
             $this->_message = $message;
             $transportClassName = $config->getTransportClassName();
-            $this->_transport = $manager->create($transportClassName, ['message' => $message]);
+            $this->_transport = $manager->create(
+                $transportClassName,
+                ['message' => $message]
+            );
 
         } catch (\Exception $e) {
             throw new MailException(
@@ -72,13 +77,16 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
         } catch (\Exception $e) {
             throw new MailException(
                 new Phrase($e->getMessage()),
-                $e);
+                $e
+            );
         }
 
         return $this;
     }
 
     /**
+     * Get the mail object of this transport
+     *
      * @return Mail
      */
     public function getMail()
@@ -87,6 +95,9 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
     }
 
     /**
+     * Associate a mail object with this transport
+     * Mail object is used to store transport information and sent message
+     *
      * @param Mail $mail
      * @return TransportInterface
      */
@@ -97,6 +108,8 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
     }
 
     /**
+     * Get message associated with this transport
+     *
      * @return \Shockwavemk\Mail\Base\Model\Mail\MessageInterface
      */
     public function getMessage()
