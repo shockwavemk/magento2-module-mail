@@ -7,3 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Apache2 license
 - First working adminhtml customer mail tracking
+
+### Changed
+
+- Rename all "storeage" to "storage"
