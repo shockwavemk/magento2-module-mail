@@ -152,33 +152,71 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
     }
 
     /**
+     * TODO
+     *
+     * @param $key
+     * @param $value
+     * @return array
+     */
+    public function getShipmentRepresentation($key, $value)
+    {
+        /** @var \Magento\Customer\Model\Customer $value */
+        $url = $this->getUrl('sales/shipment/view', array('shipment_id' => $value->getId()));
+        return "{$key} (shipment): <a href='{$url}' target='_blank'>{$value->getIncrementId()}</a>";
+    }
+
+    /**
+     * TODO
+     *
+     * @param $key
+     * @param $value
+     * @return array
+     */
+    public function getInvoiceRepresentation($key, $value)
+    {
+        /** @var \Magento\Customer\Model\Customer $value */
+        $url = $this->getUrl('sales/invoice/view', array('invoice_id' => $value->getId()));
+        return "{$key} (invoice): <a href='{$url}' target='_blank'>{$value->getIncrementId()}</a>";
+    }
+
+    /**
      * @param $key
      * @param $variable
      * @return string
      */
     public function getVarOutput($key, $variable)
     {
-        /** @var \Magento\Framework\Model\AbstractModel $variable */
-        if (!is_string($variable) && $variable->getEntityType() == 'customer') {
-            return $this->getCustomerRepresentation($key, $variable);
+        try
+        {
+            /** @var \Magento\Framework\Model\AbstractModel $variable */
+            if (!is_string($variable) && !empty($variable->getEntityType()) && $variable->getEntityType() == 'customer') {
+                return $this->getCustomerRepresentation($key, $variable);
 
-        } elseif (!is_string($variable) && $variable->getEntityType() == 'order') {
-            return $this->getOrderRepresentation($key, $variable);
+            } elseif (!is_string($variable) && !empty($variable->getEntityType()) && $variable->getEntityType() == 'order') {
+                return $this->getOrderRepresentation($key, $variable);
 
-        } elseif (!is_string($variable) && $variable->getEntityType() == 'store') {
-            return $this->getStoreRepresentation($key, $variable);
+            } elseif (!is_string($variable) && !empty($variable->getEntityType()) && $variable->getEntityType() == 'shipment') {
+                return $this->getShipmentRepresentation($key, $variable);
 
-        } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel')) {
-            return $key . ' : ' . var_export($variable->getData(), true);
+            } elseif (!is_string($variable) && !empty($variable->getEntityType()) && $variable->getEntityType() == 'invoice') {
+                return $this->getInvoiceRepresentation($key, $variable);
 
-        } elseif (!filter_var($variable, FILTER_VALIDATE_URL) === false) {
-            return $this->getLinkRepresentation($key, $variable);
+            } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel')) {
+                return $key . ' : ' . var_export($variable->getData(), true);
 
-        } elseif (is_string($variable)) {
-            return $key . ' : ' . $variable;
+            } elseif (!filter_var($variable, FILTER_VALIDATE_URL) === false) {
+                return $this->getLinkRepresentation($key, $variable);
+
+            } elseif (is_string($variable)) {
+                return $key . ' : ' . $variable;
+            }
+        }
+        catch (\Exception $e)
+        {
+            $variable = 'variable can not be displayed';
         }
 
-        return $key;
+        return $key . ' : ' . $variable;
     }
 
     /**

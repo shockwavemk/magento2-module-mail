@@ -130,7 +130,7 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
             foreach ($e->getErrors() as $error) {
 
                 $this->messageManager->addError(
-                    $error->getMessage() . ': ' . $error->getTraceAsString()
+                    $error->getMessage()
                 );
 
             }
@@ -139,7 +139,7 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
 
             $this->messageManager->addException(
                 $e,
-                __($e->getMessage() . ': ' . $e->getTraceAsString())
+                __($e->getMessage())
             );
 
         }
