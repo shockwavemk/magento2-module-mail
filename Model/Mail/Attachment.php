@@ -38,7 +38,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
 
     /**
      * Attachment constructor.
-     * @param Base $storeage
+     * @param Base $storage
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
@@ -47,7 +47,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
      * @internal param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        Base $storeage,
+        Base $storage,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
@@ -56,7 +56,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
     {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
 
-        $this->storeage = $storeage;
+        $this->storage = $storage;
     }
 
     /**

@@ -104,7 +104,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     protected $_storeManager;
 
     /** @var \Shockwavemk\Mail\Base\Model\Storages\Base */
-    protected $_storeage;
+    protected $_storage;
 
     /** @var \Magento\Framework\Stdlib\DateTime\DateTime */
     protected $_date;
@@ -136,7 +136,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      * @param TimezoneInterface $timezone
      * @param \Magento\Framework\ObjectManagerInterface $manager
      * @param Config $config
-     * @param Storages\Base $storeage
+     * @param Storages\Base $storage
      * @param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -152,7 +152,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      * @param TimezoneInterface $timezone
      * @param \Magento\Framework\ObjectManagerInterface $manager
      * @param Config $config
-     * @param Storages\Base $storeage
+     * @param Storages\Base $storage
      * @param array $data
      */
     public function __construct(
@@ -168,7 +168,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         TimezoneInterface $timezone,
         \Magento\Framework\ObjectManagerInterface $manager,
         \Shockwavemk\Mail\Base\Model\Config $config,
-        \Shockwavemk\Mail\Base\Model\Storages\Base $storeage,
+        \Shockwavemk\Mail\Base\Model\Storages\Base $storage,
         array $data = []
     )
     {
@@ -178,7 +178,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         $this->_dateTime = $dateTime;
         $this->_manager = $manager;
         $this->_config = $config;
-        $this->_storeage = $storeage;
+        $this->_storage = $storage;
         $this->_timeZone = $timezone;
 
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
@@ -187,9 +187,9 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     /**
      * @return Storages\Base
      */
-    public function getStoreage()
+    public function getstorage()
     {
-        return $this->_storeage;
+        return $this->_storage;
     }
 
     /**
@@ -207,7 +207,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
             return parent::getMessage();
         }
 
-        return $this->_storeage->loadMessage(
+        return $this->_storage->loadMessage(
             $this
         );
     }
@@ -244,7 +244,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
             return parent::getAttachments();
         }
 
-        $attachments = $this->_storeage->getAttachments($this);
+        $attachments = $this->_storage->getAttachments($this);
 
         /** @noinspection PhpUndefinedMethodInspection */
         $this->setAttachments($attachments);
@@ -255,7 +255,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     /**
      * TODO
      *
-     * @return string
+     * @return string[]
      */
     public function getRecipients()
     {
@@ -453,7 +453,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     }
 
     /**
-     * Save mail to db, message and attachments to storeage
+     * Save mail to db, message and attachments to storage
      *
      * @throws \Magento\Framework\Exception\MailException
      * @throws \Exception
@@ -462,11 +462,11 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     {
         parent::save();
 
-        $this->_storeage->saveMessage($this);
+        $this->_storage->saveMessage($this);
 
-        $this->_storeage->saveAttachments($this);
+        $this->_storage->saveAttachments($this);
 
-        $this->_storeage->saveMail($this);
+        $this->_storage->saveMail($this);
     }
 
     /**

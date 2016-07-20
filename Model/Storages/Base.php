@@ -28,9 +28,9 @@ class Base implements StorageInterface
     )
     {
         try {
-
-            $storeageClassName = $config->getStoreageClassName();
-            $this->_storage = $manager->get($storeageClassName);
+            $this->_storage = $manager->get(
+                $config->getStorageClassName()
+            );
 
         } catch(\Exception $e) {
 

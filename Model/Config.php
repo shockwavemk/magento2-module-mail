@@ -12,16 +12,46 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
  */
 class Config
 {
+    /**
+     *
+     */
     const XML_PATH_TYPE = 'system/smtp/type';
+    /**
+     *
+     */
     const XML_PATH_TRANSPORT_TYPES = 'transport/types';
 
-    const XML_PATH_STOREAGE = 'system/smtp/storage';
-    const XML_PATH_STOREAGE_TYPES = 'transport/storages';
+    /**
+     *
+     */
+    const XML_PATH_STORAGE = 'system/smtp/storage';
+    /**
+     *
+     */
+    const XML_PATH_STORAGE_TYPES = 'transport/storages';
+    /**
+     *
+     */
     const XML_PATH_SPOOLER_FOLDER_PATH = 'system/smtp/host_spool_folder_path';
+    /**
+     *
+     */
     const XML_PATH_SPOOLER_RETRY_LIMIT = 'system/smtp/host_spool_folder_retry_limit';
+    /**
+     *
+     */
     const XML_PATH_MAIL_TEST_MODE = 'system/smtp/test_mode';
+    /**
+     *
+     */
     const XML_PATH_MAIL_TRACKING_ENABLED = 'system/smtp/tracking_enabled';
+    /**
+     *
+     */
     const XML_PATH_MAIL_TRACKING_CLICKS_ENABLED = 'system/smtp/tracking_clicks_enabled';
+    /**
+     *
+     */
     const XML_PATH_MAIL_TRACKING_OPENS_ENABLED = 'system/smtp/tracking_opens_enabled';
 
     /**
@@ -35,8 +65,7 @@ class Config
      * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\Encryption\EncryptorInterface $encryptor
+        ScopeConfigInterface $scopeConfig
     )
     {
         $this->scopeConfig = $scopeConfig;
@@ -44,16 +73,25 @@ class Config
 
     // Transport
 
+    /**
+     * @return mixed
+     */
     public function getTransportType()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_TYPE);
     }
 
+    /**
+     * @return mixed
+     */
     public function getTransportTypes()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_TRANSPORT_TYPES);
     }
 
+    /**
+     * @return null
+     */
     public function getTransportClassName()
     {
         $className = null;
@@ -71,60 +109,83 @@ class Config
         return $className;
     }
 
-    // Storeage
+    // Storage
 
+    /**
+     * @return mixed
+     */
     public function getHostSpoolerFolderPath()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_SPOOLER_FOLDER_PATH);
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getHostRetryLimit()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_SPOOLER_RETRY_LIMIT);
     }
-    
-    public function getStoreageType()
+
+    /**
+     * @return mixed
+     */
+    public function getStorageType()
     {
-        return $this->scopeConfig->getValue(self::XML_PATH_STOREAGE);
+        return $this->scopeConfig->getValue(self::XML_PATH_STORAGE);
     }
 
-    public function getStoreageTypes()
+    /**
+     * @return mixed
+     */
+    public function getStorageTypes()
     {
-        return $this->scopeConfig->getValue(self::XML_PATH_STOREAGE_TYPES);
+        return $this->scopeConfig->getValue(self::XML_PATH_STORAGE_TYPES);
     }
 
-    public function getStoreageClassName()
+    /**
+     * @return null
+     */
+    public function getStorageClassName()
     {
-        $className = null;
+        $type = $this->getStorageType();
+        $types = $this->getStorageTypes();
 
-        $type = $this->getStoreageType();
-        $types = $this->getStoreageTypes();
-
-        if(!empty($types[$type]))
+        if(empty($typeConfig = $types[$type]))
         {
-            $typeConfig = $types[$type];
-
-            $className = $typeConfig['class'];
+            return null;
         }
-
-        return $className;
+        
+        return $typeConfig['class'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getTestMode()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_MAIL_TEST_MODE);
     }
 
+    /**
+     * @return mixed
+     */
     public function getTrackingEnabled()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_MAIL_TRACKING_ENABLED);
     }
 
+    /**
+     * @return mixed
+     */
     public function getTrackingClicksEnabled()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_MAIL_TRACKING_CLICKS_ENABLED);
     }
 
+    /**
+     * @return mixed
+     */
     public function getTrackingOpensEnabled()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_MAIL_TRACKING_OPENS_ENABLED);

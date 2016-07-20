@@ -7,7 +7,7 @@ namespace Shockwavemk\Mail\Base\Model\Mail;
 use Zend_Mime_Part;
 
 /**
- * Mail Storeage interface
+ * Mail attachment interface
  *
  * @api
  */

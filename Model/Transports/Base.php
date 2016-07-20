@@ -4,6 +4,13 @@
  * See LICENSE.txt for license details.
  */
 namespace Shockwavemk\Mail\Base\Model\Transports;
+use Magento\Framework\Exception\MailException;
+use Magento\Framework\Mail\MessageInterface;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Phrase;
+use Magento\Framework\Stdlib\DateTime;
+use Shockwavemk\Mail\Base\Model\Config;
+use Shockwavemk\Mail\Base\Model\Mail;
 
 /**
  * Class Base
@@ -12,7 +19,7 @@ namespace Shockwavemk\Mail\Base\Model\Transports;
 class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
 {
     /**
-     * @var \Magento\Framework\Mail\MessageInterface
+     * @var MessageInterface
      */
     protected $_message;
 
@@ -22,33 +29,25 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
     protected $_transport;
 
     /**
-     * @var \Shockwavemk\Mail\Base\Model\Storages\StorageInterface
-     */
-    protected $_storeage;
-
-    /**
-     * @param \Shockwavemk\Mail\Base\Model\Config $config
-     * @param \Magento\Framework\Mail\MessageInterface $message
-     * @param \Magento\Framework\ObjectManagerInterface $manager
-     * @throws \Magento\Framework\Exception\MailException
+     * @param Config $config
+     * @param MessageInterface $message
+     * @param ObjectManagerInterface $manager
+     * @throws MailException
      */
     public function __construct(
-        \Shockwavemk\Mail\Base\Model\Config $config,
-        \Magento\Framework\Mail\MessageInterface $message,
-        \Magento\Framework\ObjectManagerInterface $manager,
-        \Magento\Framework\Stdlib\DateTime $dateTime
+        Config $config,
+        MessageInterface $message,
+        ObjectManagerInterface $manager
     )
     {
         try {
             $this->_message = $message;
-            $this->_dateTime = $dateTime;
-
             $transportClassName = $config->getTransportClassName();
             $this->_transport = $manager->create($transportClassName, ['message' => $message]);
 
         } catch (\Exception $e) {
-            throw new \Magento\Framework\Exception\MailException(
-                new \Magento\Framework\Phrase($e->getMessage()),
+            throw new MailException(
+                new Phrase($e->getMessage()),
                 $e);
         }
     }
@@ -56,8 +55,8 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
     /**
      * Send a mail using this transport
      *
-     * @return \Shockwavemk\Mail\Base\Model\Transports\Base
-     * @throws \Magento\Framework\Exception\MailException
+     * @return Base
+     * @throws MailException
      */
     public function sendMessage()
     {
@@ -71,8 +70,8 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
             $mail->save();
 
         } catch (\Exception $e) {
-            throw new \Magento\Framework\Exception\MailException(
-                new \Magento\Framework\Phrase($e->getMessage()),
+            throw new MailException(
+                new Phrase($e->getMessage()),
                 $e);
         }
 
@@ -80,7 +79,7 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
     }
 
     /**
-     * @return \Shockwavemk\Mail\Base\Model\Mail
+     * @return Mail
      */
     public function getMail()
     {
@@ -88,7 +87,7 @@ class Base implements \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
     }
 
     /**
-     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     * @param Mail $mail
      * @return TransportInterface
      */
     public function setMail($mail)

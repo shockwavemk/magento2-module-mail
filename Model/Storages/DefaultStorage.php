@@ -34,7 +34,7 @@ class DefaultStorage implements StorageInterface
     protected $_objectManager;
 
     /**
-     * DebugStoreage constructor.
+     * DebugStorage constructor.
      *
      * @param Config $config
      * @param MessageInterface $message
@@ -252,7 +252,7 @@ class DefaultStorage implements StorageInterface
     public function saveMail($mail)
     {
         // first save file to spool path
-        // to avoid exceptions on external storeage provider connection
+        // to avoid exceptions on external storage provider connection
 
         // convert message to json
         $mailJson = json_encode($mail);
@@ -305,7 +305,7 @@ class DefaultStorage implements StorageInterface
     }
 
     /**
-     * Load binary data from storeage provider
+     * Load binary data from storage provider
      *
      * @param \Shockwavemk\Mail\Base\Model\Mail $mail
      * @param string $path
