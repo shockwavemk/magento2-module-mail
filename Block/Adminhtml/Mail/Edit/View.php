@@ -189,16 +189,16 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
         try
         {
             /** @var \Magento\Framework\Model\AbstractModel $variable */
-            if (!is_string($variable) && !empty($variable->getEntityType()) && $variable->getEntityType() == 'customer') {
+            if (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'customer') {
                 return $this->getCustomerRepresentation($key, $variable);
 
-            } elseif (!is_string($variable) && !empty($variable->getEntityType()) && $variable->getEntityType() == 'order') {
+            } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'order') {
                 return $this->getOrderRepresentation($key, $variable);
 
-            } elseif (!is_string($variable) && !empty($variable->getEntityType()) && $variable->getEntityType() == 'shipment') {
+            } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'shipment') {
                 return $this->getShipmentRepresentation($key, $variable);
 
-            } elseif (!is_string($variable) && !empty($variable->getEntityType()) && $variable->getEntityType() == 'invoice') {
+            } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'invoice') {
                 return $this->getInvoiceRepresentation($key, $variable);
 
             } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel')) {
