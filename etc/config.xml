@@ -9,11 +9,11 @@
     <default>
         <system>
             <smtp>
-                <type>debug</type>
-                <storeage>debug</storeage>
+                <type>default</type>
+                <storage>default</storage>
                 <cache_limit>100</cache_limit>
                 <upload_limit>3</upload_limit>
-                <host_spool_folder_path>/var/www/html/var/spool</host_spool_folder_path>
+                <host_spool_folder_path>/var/www/html/pub/media/emails</host_spool_folder_path>
                 <host_spool_folder_retry_limit>5</host_spool_folder_retry_limit>
             </smtp>
         </system>
@@ -25,13 +25,13 @@
                     <class>Magento\Framework\Mail\Transport</class>
                 </default>
             </types>
-            <storeages>
+            <storages>
                 <default>
                     <label>Default</label>
                     <value>default</value>
-                    <class>Shockwavemk\Mail\Base\Model\Storeages\DefaultStoreage</class>
+                    <class>Shockwavemk\Mail\Base\Model\Storages\DefaultStorage</class>
                 </default>
-            </storeages>
+            </storages>
         </transport>
     </default>
 </config>

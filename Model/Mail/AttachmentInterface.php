@@ -7,7 +7,7 @@ namespace Shockwavemk\Mail\Base\Model\Mail;
 use Zend_Mime_Part;
 
 /**
- * Mail Storeage interface
+ * Mail attachment interface
  *
  * @api
  */
@@ -60,6 +60,11 @@ interface AttachmentInterface
     /**
      * @return string
      */
+    public function getFileName();
+
+    /**
+     * @return string
+     */
     public function getDisposition();
 
     /**
@@ -90,6 +95,12 @@ interface AttachmentInterface
      * @param string $value
      * @return $this
      */
+    public function setFileName($value);
+    
+    /**
+     * @param string $value
+     * @return $this
+     */
     public function setFilePath($value);
 
     /**
@@ -103,5 +114,4 @@ interface AttachmentInterface
      * @return $this
      */
     public function setUrl($value);
-
 }

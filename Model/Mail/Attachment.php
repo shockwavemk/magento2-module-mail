@@ -8,6 +8,7 @@ namespace Shockwavemk\Mail\Base\Model\Mail;
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 use JsonSerializable;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Shockwavemk\Mail\Base\Model\Storages\Base;
 use Zend_Mime;
 use Zend_Mime_Part;
 
@@ -32,21 +33,21 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
     /** @var ScopeConfigInterface */
     protected $scopeConfig;
 
-    /** @var \Shockwavemk\Mail\Base\Model\Storeages\Base */
-    protected $storeage;
+    /** @var Base */
+    protected $storage;
 
     /**
      * Attachment constructor.
-     * @param ScopeConfigInterface $scopeConfig
-     * @param \Shockwavemk\Mail\Base\Model\Storeages\Base $storeage
+     * @param Base $storage
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
      * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
+     * @internal param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        \Shockwavemk\Mail\Base\Model\Storeages\Base $storeage,
+        Base $storage,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
@@ -55,7 +56,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
     {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
 
-        $this->storeage = $storeage;
+        $this->storage = $storage;
     }
 
     /**
@@ -98,6 +99,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
      */
     public function getBinary()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (empty($this->getData('binary'))) {
             
             $attachmentBinary = file_get_contents(
@@ -125,6 +127,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
      */
     public function getFilePath()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (empty($this->getData('file_path'))) {
             $this->setData('file_path',
                 self::ZEND_MAIL_ATTACHMENT_DEFAULT_FILENAME
@@ -141,6 +144,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
      */
     public function getMimeType()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (empty($this->getData('mime_type'))) {
             $this->setData('mime_type',
                 self::ZEND_MAIL_ATTACHMENT_DEFAULT_TYPE
@@ -157,6 +161,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
      */
     public function getDisposition()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (empty($this->getData('disposition'))) {
             $this->setData(
                 'disposition',
@@ -184,6 +189,16 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
         }
 
         return $this->getData('file_name');
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setFileName($value)
+    {
+        $this->setData('file_name', $value);
+        return $this;
     }
 
     /**

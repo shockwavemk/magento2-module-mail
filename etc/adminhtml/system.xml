@@ -13,15 +13,15 @@
                     <label>Connection type</label>
                     <source_model>Shockwavemk\Mail\Base\Model\Config\Source\Type</source_model>
                 </field>
-                <field id="storeage" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Storeage type</label>
-                    <source_model>Shockwavemk\Mail\Base\Model\Config\Source\Storeage</source_model>
+                <field id="storage" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Storage type</label>
+                    <source_model>Shockwavemk\Mail\Base\Model\Config\Source\Storage</source_model>
                 </field>
                 <field id="cache_limit" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Cache limit for local storeage</label>
+                    <label>Cache limit for local storage</label>
                 </field>
                 <field id="upload_limit" translate="label" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Upload limit for local storeage</label>
+                    <label>Upload limit for local storage</label>
                 </field>
                 <field id="host_spool_folder_path" translate="label" type="text" sortOrder="14" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Host Spooler Folder Path</label>
@@ -34,18 +34,22 @@
                 <field id="test_mode" translate="label" sortOrder="15" type="select" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enable test mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[If test mode enabled, emails are built and stored, not sent]]></comment>
                 </field>
                 <field id="tracking_enabled" translate="label" sortOrder="16" type="select" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enable tracking</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Depending on mail transport vendor, tracking feature is enabled]]></comment>
                 </field>
                 <field id="tracking_clicks_enabled" translate="label" sortOrder="17" type="select" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enable tracking of clicks</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Depending on mail transport vendor, all links in outgoing messages are replaced by tracking links]]></comment>
                 </field>
                 <field id="tracking_opens_enabled" translate="label" sortOrder="18" type="select" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enable tracking of mail open</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Depending on mail transport vendor, email opening by customer is tracked]]></comment>
                 </field>
             </group>
         </section>

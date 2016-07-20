@@ -7,6 +7,8 @@ namespace Shockwavemk\Mail\Base\Model;
 
 use JsonSerializable;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Shockwavemk\Mail\Base\Model\Mail\AttachmentInterface;
 use Shockwavemk\Mail\Base\Model\ResourceModel\Mail as ResourceMail;
 use Shockwavemk\Mail\Base\Model\ResourceModel\Mail\Collection;
 use stdClass;
@@ -30,7 +32,6 @@ use stdClass;
  * @method string getTemplateModel()
  * @method int getStoreId()
  * @method bool getSent()
- * @method string getSentAt()
  * @method string getLanguageCode()
  * @method array getRecipientVariables()
  * @method string getTransportId()
@@ -57,7 +58,7 @@ use stdClass;
  * @method \Shockwavemk\Mail\Base\Model\Mail setLanguageCode(string $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setRecipientVariables(array $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setMessage(\Shockwavemk\Mail\Base\Model\Mail\MessageInterface $message)
- * @method \Shockwavemk\Mail\Base\Model\Mail setAttachments(array $value)
+ * @method \Shockwavemk\Mail\Base\Model\Mail setAttachments(AttachmentInterface[] $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setAdditionalMessages(array $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setAdditionalInlines(array $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setDeliveryTime(string $value)
@@ -80,8 +81,11 @@ use stdClass;
  *
  * @method \Shockwavemk\Mail\Base\Model\Mail setResult(stdClass $value) - will not be saved
  *
+ * @property TimezoneInterface _timeZone
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
+
+/** @noinspection ClassOverridesFieldOfSuperClassInspection */
 class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSerializable
 {
     /**
@@ -99,8 +103,8 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     /** @var \Magento\Store\Model\StoreManagerInterface */
     protected $_storeManager;
 
-    /** @var \Shockwavemk\Mail\Base\Model\Storeages\Base */
-    protected $_storeage;
+    /** @var \Shockwavemk\Mail\Base\Model\Storages\Base */
+    protected $_storage;
 
     /** @var \Magento\Framework\Stdlib\DateTime\DateTime */
     protected $_date;
@@ -117,6 +121,9 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     /** @var Config */
     protected $_config;
 
+    /** @var TimezoneInterface */
+    protected $_timeZone;
+
     /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
@@ -126,8 +133,27 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
      * @param \Magento\Framework\Math\Random $mathRandom
      * @param \Magento\Framework\Stdlib\DateTime $dateTime
+     * @param TimezoneInterface $timezone
+     * @param \Magento\Framework\ObjectManagerInterface $manager
+     * @param Config $config
+     * @param Storages\Base $storage
      * @param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
+    /** @noinspection MoreThanThreeArgumentsInspection
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param ResourceMail $resource
+     * @param Collection $resourceCollection
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $date
+     * @param \Magento\Framework\Math\Random $mathRandom
+     * @param \Magento\Framework\Stdlib\DateTime $dateTime
+     * @param TimezoneInterface $timezone
+     * @param \Magento\Framework\ObjectManagerInterface $manager
+     * @param Config $config
+     * @param Storages\Base $storage
+     * @param array $data
      */
     public function __construct(
         /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
@@ -139,9 +165,10 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         \Magento\Framework\Stdlib\DateTime\DateTime $date,
         \Magento\Framework\Math\Random $mathRandom,
         \Magento\Framework\Stdlib\DateTime $dateTime,
+        TimezoneInterface $timezone,
         \Magento\Framework\ObjectManagerInterface $manager,
         \Shockwavemk\Mail\Base\Model\Config $config,
-        \Shockwavemk\Mail\Base\Model\Storeages\Base $storeage,
+        \Shockwavemk\Mail\Base\Model\Storages\Base $storage,
         array $data = []
     )
     {
@@ -151,17 +178,18 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         $this->_dateTime = $dateTime;
         $this->_manager = $manager;
         $this->_config = $config;
-        $this->_storeage = $storeage;
+        $this->_storage = $storage;
+        $this->_timeZone = $timezone;
 
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
     /**
-     * @return Storeages\Base
+     * @return Storages\Base
      */
-    public function getStoreage()
+    public function getstorage()
     {
-        return $this->_storeage;
+        return $this->_storage;
     }
 
     /**
@@ -172,17 +200,21 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      */
     public function getMessage()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         if (!empty(parent::getMessage())) {
+            /** @noinspection PhpUndefinedMethodInspection */
             return parent::getMessage();
         }
 
-        return $this->_storeage->loadMessage(
+        return $this->_storage->loadMessage(
             $this
         );
     }
 
     /**
      * @param \Shockwavemk\Mail\Base\Model\Mail\AttachmentInterface $attachment
+     * @throws \Magento\Framework\Exception\MailException
      */
     public function addAttachment($attachment)
     {
@@ -192,6 +224,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
 
         $attachments[$attachment->getFileName()] = $attachment;
 
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->setAttachments($attachments);
     }
 
@@ -205,21 +238,24 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     public function getAttachments()
     {
         /** @noinspection IsEmptyFunctionUsageInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         if (!empty(parent::getAttachments())) {
+            /** @noinspection PhpUndefinedMethodInspection */
             return parent::getAttachments();
         }
 
-        $attachments = $this->_storeage->getAttachments($this);
+        $attachments = $this->_storage->getAttachments($this);
 
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->setAttachments($attachments);
 
         return $attachments;
     }
 
     /**
+     * TODO
      *
-     *
-     * @return string
+     * @return string[]
      */
     public function getRecipients()
     {
@@ -244,7 +280,8 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     public function getSenderMail()
     {
         $value = $this->getData('sender_mail');
-        if(!empty($decoded = json_decode($value, true))) {
+        /** @noinspection IsEmptyFunctionUsageInspection */
+        if (!empty($decoded = json_decode($value, true))) {
             return $decoded;
         }
         return '';
@@ -256,6 +293,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      */
     public function setVars(array $value)
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (!empty($value)) {
             $value = $this->convertMagentoModelsToPointer($value);
         }
@@ -295,6 +333,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     {
         $value = $this->getData('vars');
 
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (!empty($value)) {
             $value = json_decode($value, true);
             $value = $this->convertPointerToMagentoModels($value);
@@ -375,7 +414,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     {
         $value = $this->getData('tags');
         /** @noinspection IsEmptyFunctionUsageInspection */
-        if(!empty($decoded = json_decode($value, true))) {
+        if (!empty($decoded = json_decode($value, true))) {
             return $decoded;
         }
         return [];
@@ -389,10 +428,13 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      */
     public function updateWithTransport($transport)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         $this
             ->setSubject($transport->getMessage()->getSubject())
             ->setMessage($transport->getMessage())
-            ->setRecipients($transport->getMessage()->getRecipients());
+            ->setRecipients($transport->getMessage()->getRecipients())
+            ->setId(null);
 
         return $this;
     }
@@ -400,7 +442,7 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     /**
      * Set recipients of mail
      *
-     * @param array $value
+     * @param string[] $value
      * @return \Shockwavemk\Mail\Base\Model\Mail
      */
     public function setRecipients(array $value)
@@ -411,25 +453,27 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     }
 
     /**
-     * Save mail to db, message and attachments to storeage
+     * Save mail to db, message and attachments to storage
      *
      * @throws \Magento\Framework\Exception\MailException
+     * @throws \Exception
      */
     public function save()
     {
         parent::save();
 
-        $this->_storeage->saveMessage($this);
+        $this->_storage->saveMessage($this);
 
-        $this->_storeage->saveAttachments($this);
+        $this->_storage->saveAttachments($this);
 
-        $this->_storeage->saveMail($this);
+        $this->_storage->saveMail($this);
     }
 
     /**
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @throws \Magento\Framework\Exception\MailException
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
@@ -438,7 +482,8 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         $data = $this->getData();
         $attachmentsSerialized = [];
 
-        if(!empty($this->getAttachments())) {
+        /** @noinspection IsEmptyFunctionUsageInspection */
+        if (!empty($this->getAttachments())) {
             foreach ($this->getAttachments() as $attachment) {
                 $attachmentsSerialized[] = $attachment->jsonSerialize();
             }
@@ -449,24 +494,34 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         return $data;
     }
 
+    /**
+     * @return string
+     */
     public function getDeliveryTime()
     {
-        $value = $this->getData('delivery_time');
+        $deliveryTime = $this->getData('delivery_time');
+        $dateTime = $this->_timeZone->date($deliveryTime);
 
-        $tz = 'Europe/Berlin';
-        $dt = new \DateTime("+1 hour", new \DateTimeZone($tz)); //first argument "must" be a string
-
-        if($value <= $dt->format('Y-m-d H:i:s')) {
-            $value = $dt->format('D, d M Y H:i:s O');
-        }
-
-        return $value;
+        return $dateTime->format('D, d M Y H:i:s O');
     }
 
+    /**
+     * @return string
+     */
+    public function getSentAt()
+    {
+        $sentAt = $this->getData('sent_at');
+        $dateTime = $this->_timeZone->date($sentAt);
 
+        return $dateTime->format('D, d M Y H:i:s O');
+    }
 
+    /**
+     * @return string
+     */
     public function getTestMode()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (empty($value = $this->getData('test_mode'))) {
             $value = $this->_config->getTestMode();
             $this->setData('test_mode', $value);
@@ -475,8 +530,12 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         return $value;
     }
 
+    /**
+     * @return string
+     */
     public function getTrackingEnabled()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (empty($value = $this->getData('tracking_enabled'))) {
             $value = $this->_config->getTrackingEnabled();
             $this->setData('tracking_enabled', $value);
@@ -485,8 +544,12 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         return $value;
     }
 
+    /**
+     * @return string
+     */
     public function getTrackingClicksEnabled()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (empty($value = $this->getData('tracking_clicks_enabled'))) {
             $value = $this->_config->getTrackingClicksEnabled();
             $this->setData('tracking_clicks_enabled', $value);
@@ -495,8 +558,12 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         return $value;
     }
 
+    /**
+     * @return string
+     */
     public function getTrackingOpensEnabled()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
         if (empty($value = $this->getData('tracking_opens_enabled'))) {
             $value = $this->_config->getTrackingOpensEnabled();
             $this->setData('tracking_opens_enabled', $value);

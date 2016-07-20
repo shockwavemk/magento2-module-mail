@@ -6,7 +6,7 @@
 namespace Shockwavemk\Mail\Base\Model\Mail;
 
 /**
- * Mail Storeage interface
+ * Mail message interface
  *
  * @api
  */

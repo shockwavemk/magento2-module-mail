@@ -5,9 +5,9 @@
  */
 namespace Shockwavemk\Mail\Base\Model\Config\Source;
 
-use Shockwavemk\Mail\Base\Model\Config;
+use Magento\Framework\Option\ArrayInterface;
 
-class Storeage implements \Magento\Framework\Option\ArrayInterface
+class Storage implements ArrayInterface
 {
     protected $config;
 
@@ -23,17 +23,13 @@ class Storeage implements \Magento\Framework\Option\ArrayInterface
      */
     public function toOptionArray()
     {
-        if(empty($this->config->getStoreageTypes()))
-        {
-            return [
-                ['label' => __('Disabled'), 'value' => 'disabled']
-            ];
-        }
-
         $selection = array();
-        foreach ($this->config->getStoreageTypes() as $storeageType)
+        foreach ($this->config->getStorageTypes() as $storageType)
         {
-            $selection[] = ['label' => __($storeageType['label']), 'value' => $storeageType['value']];
+            $selection[] = [
+                'label' => __($storageType['label']), 
+                'value' => $storageType['value']
+            ];
         }
 
         return $selection;

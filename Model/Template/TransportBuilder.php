@@ -130,6 +130,7 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     public function updateMailWithTransportData()
     {
         $this->getMail()
+            ->setSubject($this->message->getSubject())
             ->setTemplateIdentifier($this->templateIdentifier)
             ->setTemplateModel($this->templateModel)
             ->setVars($this->templateVars)
@@ -204,15 +205,14 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      */
     public function createTransport()
     {
+        $this->updateMailWithTransportData();
+
         /** @var \Shockwavemk\Mail\Base\Model\Transports\TransportInterface $mailTransport */
         $mailTransport = $this->mailTransportFactory
             ->create(
                 ['message' => clone $this->message]
             );
 
-        $this->updateMailWithTransportData();
-
-        
         $mailTransport->setMail(
             $this->getMail()
         );
