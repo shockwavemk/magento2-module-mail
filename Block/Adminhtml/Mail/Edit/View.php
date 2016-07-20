@@ -210,6 +210,10 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
             } elseif (is_string($variable)) {
                 return $key . ' : ' . $variable;
             }
+            else
+            {
+                return $key . ' : ' . var_export($variable, true);
+            }
         }
         catch (\Exception $e)
         {
