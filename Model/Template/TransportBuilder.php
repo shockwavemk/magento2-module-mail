@@ -6,6 +6,14 @@
 
 namespace Shockwavemk\Mail\Base\Model\Template;
 
+use Magento\Framework\App\AreaList;
+use Magento\Framework\App\TemplateTypesInterface;
+use Magento\Framework\Mail\MessageInterface;
+use Magento\Framework\Mail\Template\FactoryInterface;
+use Magento\Framework\Mail\Template\SenderResolverInterface;
+use Magento\Framework\Mail\TransportInterfaceFactory;
+use Magento\Framework\ObjectManagerInterface;
+
 /**
  * Class TransportBuilder
  * @package Shockwavemk\Mail\Base\Model\Template
@@ -31,19 +39,20 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     protected $_sender;
 
     /**
-     * @return mixed
+     * @var AreaList
      */
-    public function getSenderMail()
-    {
-        return $this->_sender;
-    }
+    private $areaList;
 
-    /**
-     * @param mixed $sender
-     */
-    public function setSenderMail($sender)
+    public function __construct(
+        FactoryInterface $templateFactory,
+        MessageInterface $message,
+        SenderResolverInterface $senderResolver,
+        ObjectManagerInterface $objectManager,
+        TransportInterfaceFactory $mailTransportFactory,
+        AreaList $areaList)
     {
-        $this->_sender = $sender;
+        parent::__construct($templateFactory, $message, $senderResolver, $objectManager, $mailTransportFactory);
+        $this->areaList = $areaList;
     }
 
     /**
@@ -59,69 +68,51 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     }
 
     /**
-     * Get mail transport with a backup of a existing messageString
+     * Prepare message
      *
-     * @param \Shockwavemk\Mail\Base\Model\Mail\MessageInterface $message
+     * @return $this
+     * @throws \Zend_Mail_Exception
+     */
+    protected function prepareMessage()
+    {
+        $template = $this->getTemplate();
+
+        $types = [
+            TemplateTypesInterface::TYPE_TEXT => MessageInterface::TYPE_TEXT,
+            TemplateTypesInterface::TYPE_HTML => MessageInterface::TYPE_HTML,
+        ];
+
+        // Bugfix for not translated cron scheduled mails
+        $areaObject = $this->areaList->getArea($template->getDesignConfig()->getArea());
+        $areaObject->load(\Magento\Framework\App\Area::PART_TRANSLATE);
+
+        $body = $template->processTemplate();
+        $this->message->setMessageType($types[$template->getType()])
+            ->setBody($body)
+            ->setSubject($template->getSubject());
+
+        return $this;
+    }
+
+    /**
      * @return \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
      */
-    public function getBackupTransport($message)
+    public function createTransport()
     {
-        $this->prepareMessage();
+        $this->updateMailWithTransportData();
 
-        // replace message
-        $this->message = $message;
+        /** @var \Shockwavemk\Mail\Base\Model\Transports\TransportInterface $mailTransport */
+        $mailTransport = $this->mailTransportFactory
+            ->create(
+                ['message' => clone $this->message]
+            );
 
-        return $this->createTransport();
-    }
+        $mailTransport->setMail(
+            $this->getMail()
+        );
 
-    /**
-     * Get mail 
-     * 
-     * @return \Shockwavemk\Mail\Base\Model\Mail
-     */
-    public function getMail()
-    {
-        /** @noinspection IsEmptyFunctionUsageInspection */
-        if(empty($this->_mail))
-        {
-            $this->_mail = $this->objectManager
-                ->get('Shockwavemk\Mail\Base\Model\Mail');
-
-            /** @var \Shockwavemk\Mail\Base\Model\Mail\AttachmentCollection $attachmentCollection */
-            $attachmentCollection = $this->objectManager
-                ->get('Shockwavemk\Mail\Base\Model\Mail\AttachmentCollection');
-
-            foreach($attachmentCollection as $attachment) {
-                $this->_mail->addAttachment($attachment);
-            }
-        }
-
-        return $this->_mail;
-    }
-
-    /**
-     * @param $mail \Shockwavemk\Mail\Base\Model\Mail
-     * @return $this \Shockwavemk\Mail\Base\Model\Template\TransportBuilder
-     */
-    public function setMail($mail)
-    {
-        $this->_mail = $mail;
-        return $this;
-    }
-
-    /**
-     * Set mail from address
-     *
-     * @param string|array $from
-     * @return $this
-     * @throws \Magento\Framework\Exception\MailException
-     */
-    public function setFrom($from)
-    {
-        $this->setSenderMail($this->_senderResolver->resolve($from));
-        parent::setFrom($from);
-
-        return $this;
+        $this->reset();
+        return $mailTransport;
     }
 
     /**
@@ -144,11 +135,45 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     }
 
     /**
+     * Get mail
+     *
+     * @return \Shockwavemk\Mail\Base\Model\Mail
+     */
+    public function getMail()
+    {
+        /** @noinspection IsEmptyFunctionUsageInspection */
+        if (empty($this->_mail)) {
+            $this->_mail = $this->objectManager
+                ->get('Shockwavemk\Mail\Base\Model\Mail');
+
+            /** @var \Shockwavemk\Mail\Base\Model\Mail\AttachmentCollection $attachmentCollection */
+            $attachmentCollection = $this->objectManager
+                ->get('Shockwavemk\Mail\Base\Model\Mail\AttachmentCollection');
+
+            foreach ($attachmentCollection as $attachment) {
+                $this->_mail->addAttachment($attachment);
+            }
+        }
+
+        return $this->_mail;
+    }
+
+    /**
+     * @param $mail \Shockwavemk\Mail\Base\Model\Mail
+     * @return $this \Shockwavemk\Mail\Base\Model\Template\TransportBuilder
+     */
+    public function setMail($mail)
+    {
+        $this->_mail = $mail;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getCustomerId()
     {
-        if(empty($this->_customerId)) {
+        if (empty($this->_customerId)) {
 
             if (!empty($this->templateVars['customer'])) {
                 /** @var \Magento\Customer\Model\Customer $customer */
@@ -171,7 +196,7 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      */
     public function getStoreId()
     {
-        if(empty($this->_storeId)) {
+        if (empty($this->_storeId)) {
 
             if (!empty($this->templateVars['store'])) {
                 /** @var \Magento\Store\Model\Store $store */
@@ -188,7 +213,7 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      */
     public function getLanguageCode()
     {
-        if(empty($this->_languageCode)) {
+        if (empty($this->_languageCode)) {
 
             /** @var \Magento\Framework\Locale\Resolver $resolver */
             $resolver = $this->objectManager->get('Magento\Framework\Locale\Resolver');
@@ -201,23 +226,57 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     }
 
     /**
+     * @return mixed
+     */
+    public function getSenderMail()
+    {
+        return $this->_sender;
+    }
+
+    /**
+     * Get mail transport with a backup of a existing messageString
+     *
+     * @param \Shockwavemk\Mail\Base\Model\Mail\MessageInterface $message
      * @return \Shockwavemk\Mail\Base\Model\Transports\TransportInterface
      */
-    public function createTransport()
+    public function getBackupTransport($message)
     {
-        $this->updateMailWithTransportData();
+        $this->prepareMessage();
 
-        /** @var \Shockwavemk\Mail\Base\Model\Transports\TransportInterface $mailTransport */
-        $mailTransport = $this->mailTransportFactory
-            ->create(
-                ['message' => clone $this->message]
-            );
+        // replace message
+        $this->message = $message;
 
-        $mailTransport->setMail(
-            $this->getMail()
-        );
+        return $this->createTransport();
+    }
 
-        $this->reset();
-        return $mailTransport;
+    /**
+     * Set mail from address
+     *
+     * @param string|array $from
+     * @return $this
+     * @throws \Magento\Framework\Exception\MailException
+     */
+    public function setFrom($from)
+    {
+        $this->setSenderMail($this->_senderResolver->resolve($from));
+        parent::setFrom($from);
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $sender
+     */
+    public function setSenderMail($sender)
+    {
+        $this->_sender = $sender;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplateOptions()
+    {
+        return $this->templateOptions;
     }
 }

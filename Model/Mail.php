@@ -318,6 +318,11 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
                     'entity_id' => $value->getId(),
                     'class' => get_class($value)
                 );
+            } elseif(method_exists($value, 'getData') && !empty($value->getData())) {
+                $valueData = $value->getData();
+                $valueData['entity_id'] = $value->getId();
+                $valueData['class'] = get_class($value);
+                $value = $valueData;
             }
 
             $newMailValues[$key] = $value;
