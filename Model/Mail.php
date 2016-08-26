@@ -359,30 +359,21 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
      *
      * @param $mailValues
      * @return \Magento\Framework\Model\AbstractModel[]|array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function convertPointerToMagentoModels($mailValues)
     {
         $newMailValues = [];
 
         foreach ($mailValues as $key => $value) {
-            if (is_array($value) && !empty($value['class']) && !empty($value['entity_id'])) {
-                /** @var \Magento\Framework\Model\AbstractModel $value */
-                $newValue = $this->_manager->get($value['class']);
-                $newValue->load($value['entity_id']);
-                $newMailValues[$key] = $newValue;
+            if (is_array($value)
+                && !empty($value['class']) && !empty($value['entity_id'])
+            ) {
+                $newMailValues[$key] = $this->createAbstractModelFromValue($value);
             }
-            /** @var \Magento\Rma\Model\ResourceModel\Item\Collection $newValue */
+            /** @noinspection NotOptimalIfConditionsInspection */
             elseif(is_array($value) && !empty($value['class'])) {
-                $newValue = $this->_manager->get($value['class']);
-                unset($value['class']);
-                if(!empty($value)) {
-                    foreach ($value as $item) {
-                        /** @var \Magento\Rma\Model\Item $entity */
-                        $entity = $newValue->getNewEmptyItem();
-                        $entity->addData($item);
-                        $newValue->addItem($entity);
-                    }
-                }                
+                $newMailValues[$key] = $this->createObjectFromValue($value);
             }
             else {
                 $newMailValues[$key] = $value;
@@ -596,5 +587,54 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         }
 
         return $value;
+    }
+
+    /**
+     * @param array $items
+     * @param \Magento\Eav\Model\Entity\Collection\AbstractCollection $collection
+     * @return \Magento\Eav\Model\Entity\Collection\AbstractCollection
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    protected function convertValueArrayToCollectionItems($items, $collection)
+    {
+        /** @var \Magento\Rma\Model\ResourceModel\Item\Collection $collection */
+        foreach ($items as $item) {
+            $collection->addFilter('entity_id', $item['entity_id'], 'or');
+        }
+
+        $collection->load();
+
+        return $collection;
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    protected function createObjectFromValue($value)
+    {
+        $object = $this->_manager->get($value['class']);
+        unset($value['class']);
+
+        // if object is a collection
+        if (!empty($value)
+            && is_subclass_of($object, '\Magento\Eav\Model\Entity\Collection\AbstractCollection')
+        ) {
+            $this->convertValueArrayToCollectionItems($value, $object);
+            return $object;
+        }
+        return $object;
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    protected function createAbstractModelFromValue($value)
+    {
+        /** @var \Magento\Framework\Model\AbstractModel $value */
+        $newValue = $this->_manager->get($value['class']);
+        $newValue->load($value['entity_id']);
+        return $newValue;
     }
 }

@@ -189,20 +189,24 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
         try
         {
             /** @var \Magento\Framework\Model\AbstractModel $variable */
-            if (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'customer') {
+            if (is_subclass_of($variable, '\Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'customer') {
                 return $this->getCustomerRepresentation($key, $variable);
 
-            } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'order') {
+            } elseif (is_subclass_of($variable, '\Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'order') {
                 return $this->getOrderRepresentation($key, $variable);
 
-            } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'shipment') {
+            } elseif (is_subclass_of($variable, '\Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'shipment') {
                 return $this->getShipmentRepresentation($key, $variable);
 
-            } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'invoice') {
+            } elseif (is_subclass_of($variable, '\Magento\Framework\Model\AbstractModel') && $variable->getEntityType() == 'invoice') {
                 return $this->getInvoiceRepresentation($key, $variable);
 
             } elseif (is_subclass_of($variable, 'Magento\Framework\Model\AbstractModel')) {
-                return $key . ' : ' . var_export($variable->getData(), true);
+                return $key . ' : ' . json_encode($variable->getData(), JSON_PRETTY_PRINT);
+
+            } elseif (is_subclass_of($variable, '\Magento\Eav\Model\Entity\Collection\AbstractCollection')) {
+                /** @var \Magento\Eav\Model\Entity\Collection\AbstractCollection $variable*/
+                return $key . ' : ' . json_encode($variable->getData(), JSON_PRETTY_PRINT);
 
             } elseif (!filter_var($variable, FILTER_VALIDATE_URL) === false) {
                 return $this->getLinkRepresentation($key, $variable);
@@ -212,7 +216,7 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
             }
             else
             {
-                return $key . ' : ' . var_export($variable, true);
+                return $key . ' : ' . json_encode($variable, JSON_PRETTY_PRINT);
             }
         }
         catch (\Exception $e)

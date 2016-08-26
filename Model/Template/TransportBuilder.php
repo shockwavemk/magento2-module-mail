@@ -186,6 +186,12 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
                 $order = $this->templateVars['order'];
                 return $order->getCustomerId();
             }
+
+            if (!empty($this->templateVars['rma'])) {
+                /** @var \Magento\Rma\Model\Rma $rma */
+                $rma = $this->templateVars['rma'];
+                return !empty($rma->getCustomerId()) ? $rma->getCustomerId() : $rma->getOrder()->getCustomerId();
+            }
         }
 
         return $this->_customerId;
