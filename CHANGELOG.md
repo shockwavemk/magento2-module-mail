@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+### Fixed
+- Handover stroreid to get from name and mail for specific store
 
 ## [v1.0.0] - 2016-08-25
 
