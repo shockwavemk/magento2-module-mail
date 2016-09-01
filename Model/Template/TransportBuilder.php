@@ -264,8 +264,8 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      */
     public function setFrom($from)
     {
-        $this->setSenderMail($this->_senderResolver->resolve($from, $this->getStoreId()));
-        $result = $this->_senderResolver->resolve($from, $this->getStoreId());
+	$result = $this->_senderResolver->resolve($from, $this->getStoreId());
+        $this->setSenderMail($result);
         $this->message->setFrom($result['email'], $result['name']);
         
         return $this;
