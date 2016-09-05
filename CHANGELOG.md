@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+## [v1.0.6] - 2016-09-05
+### Fixed
+- On loop mail model is now reset on transport creation
+
 ## [v1.0.5] - 2016-09-05
 ### Fixed
 - SMTP attachment encoding default is now set to base64 if not given
