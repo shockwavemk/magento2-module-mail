@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+## [v1.0.5] - 2016-09-05
+### Fixed
+- SMTP attachment encoding default is now set to base64 if not given
+
 ## [v1.0.3] - 2016-08-30
 ### Fixed
 - Handover stroreid to get from name and mail for specific store

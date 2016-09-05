@@ -174,6 +174,13 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
 
     public function getEncoding()
     {
+        /** @noinspection IsEmptyFunctionUsageInspection */
+        if (empty($this->getData('encoding'))) {
+            $this->setData(
+                'encoding',
+                Zend_Mime::ENCODING_BASE64
+            );
+        }
         return $this->getData('encoding');
     }
 
