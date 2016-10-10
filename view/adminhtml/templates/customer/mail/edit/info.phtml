@@ -81,7 +81,11 @@
             <td class="label"><label><?php echo __('Recipients') ?></label></td>
         </tr>
         <tr>
-            <td class="value"><strong><?php echo $this->htmlEscape(implode(', ', $this->getMail()->getRecipients())) ?></strong></td>
+            <?php if(is_array($this->getMail()->getRecipients())): ?>
+                <td class="value"><strong><?php echo $this->htmlEscape(implode(', ', $this->getMail()->getRecipients())) ?></strong></td>
+            <?php else: ?>
+                <td class="value"><strong><?php echo $this->htmlEscape($this->getMail()->getRecipients()) ?></strong></td>
+            <?php endif; ?>
         </tr>
         <tr>
             <td class="value">&nbsp;</td>
@@ -117,7 +121,11 @@
             <td class="label"><label><?php echo __('Sender E-Mail Address') ?></label></td>
         </tr>
         <tr>
-            <td class="value"><strong><?php echo $this->htmlEscape(implode(', ', $this->getMail()->getSenderMail())) ?></strong></td>
+            <?php if(is_array($this->getMail()->getSenderMail())): ?>
+                <td class="value"><strong><?php echo $this->htmlEscape(implode(', ', $this->getMail()->getSenderMail())) ?></strong></td>
+            <?php else: ?>
+                <td class="value"><strong><?php echo $this->htmlEscape($this->getMail()->getSenderMail()) ?></strong></td>
+            <?php endif; ?>
         </tr>
         <tr>
             <td class="value">&nbsp;</td>
