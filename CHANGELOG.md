@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
+### Fixed
+- Fix resending: In case only one recipient is available, no implode
+  several email addresses must take place.
 
 ## [v1.0.6] - 2016-09-05
 ### Fixed
