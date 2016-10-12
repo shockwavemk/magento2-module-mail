@@ -99,8 +99,10 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      */
     public function createTransport()
     {
-        $this->_mail = null;
+        // Verify to get a clean mail instance
+        $this->setMail(null);
 
+        // Transfer TransportData to Mail
         $this->updateMailWithTransportData();
 
         /** @var \Shockwavemk\Mail\Base\Model\Transports\TransportInterface $mailTransport */
@@ -108,12 +110,12 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
             ->create(
                 ['message' => clone $this->message]
             );
+        
+        $mailTransport->setMail($this->getMail());
 
-        $mailTransport->setMail(
-            $this->getMail()
-        );
-
+        // Cleanup of mail and message model used in this transport
         $this->reset();
+        
         return $mailTransport;
     }
 
@@ -140,6 +142,7 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      * Get mail
      *
      * @return \Shockwavemk\Mail\Base\Model\Mail
+     * @throws \Magento\Framework\Exception\MailException
      */
     public function getMail()
     {

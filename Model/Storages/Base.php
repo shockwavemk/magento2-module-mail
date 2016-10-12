@@ -160,7 +160,7 @@ class Base implements StorageInterface
     }
 
     /**
-     * TODO
+     * Use the concrete storage implementation to save the mail to storage
      *
      * @param \Shockwavemk\Mail\Base\Model\Mail $mail
      *
@@ -184,7 +184,7 @@ class Base implements StorageInterface
     }
 
     /**
-     * TODO
+     * Use the concrete storage implementation to load the mail to storage
      *
      * @return \Shockwavemk\Mail\Base\Model\Mail
      * @throws MailException

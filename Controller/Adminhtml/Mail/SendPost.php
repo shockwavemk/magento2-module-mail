@@ -17,9 +17,6 @@ use Shockwavemk\Mail\Base\Model\Template\TransportBuilder;
 
 class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
 {
-    /** @var \Shockwavemk\Mail\Base\Model\Mail */
-    protected $_mail;
-
     /**
      * @var TransportBuilder
      */
@@ -52,14 +49,19 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
      */
     public function execute()
     {
+        // Get request data
         $mailId = $this->_request->getParam('id');
         $recalculate = $this->_request->getParam('resend_type');
+
+        // Email address to re-send mail
         $email = $this->_request->getParam('email');
 
-        $this->_mail = $this->_objectManager->get('Shockwavemk\Mail\Base\Model\Mail');
-        $this->_mail->load($mailId);
+        /** @var \Shockwavemk\Mail\Base\Model\Mail $mail */
+        $mail = $this->_objectManager->get('Shockwavemk\Mail\Base\Model\Mail');
+        $mail->load($mailId);
 
-        if(empty($mailId) || empty($this->_mail->getId())) {
+        /** @noinspection IsEmptyFunctionUsageInspection */
+        if(empty($mailId) || empty($mail->getId()) || empty($email) || empty($recalculate)) {
 
             $redirectUrl = $this->_buildUrl(
                 'customer/mail/edit',
@@ -67,8 +69,8 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
             );
 
             $this->messageManager->addException(new \Exception(
-                __('Mail can not be loaded.')),
-                __('Mail can not be loaded.')
+                __('Please provide all data for resending.')),
+                __('Please provide all data for resending.')
             );
 
             return $this->resultRedirectFactory
@@ -78,52 +80,61 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
                 );
         }
 
-        try {
+        try
+        {
+            // Get information of parent mail
 
-            $this->_mail->setParentId(
-                $this->_mail->getId()
+            /** @var MessageInterface $parentMessage */
+            $parentMessage = $mail->getMessage();
+
+            /** @var AttachmentInterface[] $parentAttachments */
+            $parentAttachments = $mail->getAttachments();
+
+            // Set parent id to allow parent links in frontend
+            $mail->setParentId(
+                $mail->getId()
             );
 
-            /** @var MessageInterface $message */
-            $message = $this->_mail->getMessage();
-
-            $this->_mail->getAttachments();
-
-            $this->_mail->setId(null);
-
+            // On given $email
             if(!empty($email)) {
                 $recipients = [$email];
             } else {
-                $recipients = $this->_mail->getRecipients();
+                $recipients = $mail->getRecipients();
             }
+            
+            // Derive a transportBuilder from existing Mail
+            $transportBuilder =  $this->deriveTransportBuilderFromExistingMail($mail);
 
-            $transportBuilder =  $this->getTransportBuilderTemplate();
+            $this->applyRecipientsOnTransportBuilder($recipients, $transportBuilder);
 
-            foreach($recipients as $recipient) {
-                $transportBuilder->addTo(
-                    $recipient
-                );
-            }
 
-            if(!empty($recalculate) && $recalculate == 'recalculate') {
-                $transportBuilder->getTransport()
-                    ->sendMessage();
+            /** @noinspection IsEmptyFunctionUsageInspection */
+            if(!empty($recalculate) && $recalculate === 'recalculate') {
+                $transport = $transportBuilder->getTransport();
             } else {
-                $transportBuilder->getBackupTransport($message)
-                    ->sendMessage();
+                $transport = $transportBuilder->getBackupTransport($parentMessage);
             }
+
+            $transport->getMail()->setAttachments($parentAttachments);
+
+            /** @var \Shockwavemk\Mail\Base\Model\Transports\TransportInterface $transport */
+            $transport->sendMessage();
 
             $this->messageManager->addSuccess(__('Mail re-sent to customer.'));
 
             $url = $this->_buildUrl(
                 'customer/mail/edit',
-                ['_secure' => true,
-                    'id' => $this->_mail->getId()]
+                [
+                    '_secure' => true,
+                    'id' => $transport->getMail()->getId()
+                ]
             );
 
             return $this->resultRedirectFactory->create()->setUrl($this->_redirect->success($url));
 
-        } catch (InputException $e) {
+        }
+        catch (InputException $e)
+        {
 
             $this->messageManager->addError($e->getMessage());
 
@@ -135,7 +146,9 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
 
             }
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e)
+        {
 
             $this->messageManager->addException(
                 $e,
@@ -169,15 +182,37 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
     /**
      * TODO
      *
+     * @param \Shockwavemk\Mail\Base\Model\Mail $mail
+     *
      * @return TransportBuilder
      * @throws \Magento\Framework\Exception\MailException
      */
-    protected function getTransportBuilderTemplate()
+    protected function deriveTransportBuilderFromExistingMail($mail)
     {
         return $this->transportBuilder
-            ->setTemplateIdentifier($this->_mail->getTemplateIdentifier())
-            ->setTemplateOptions(['area' => Area::AREA_FRONTEND, 'store' => $this->_mail->getStoreId()])
-            ->setTemplateVars($this->_mail->getVars())
-            ->setFrom($this->_mail->getSenderMail());
+            ->setTemplateIdentifier($mail->getTemplateIdentifier())
+            ->setTemplateOptions(['area' => Area::AREA_FRONTEND, 'store' => $mail->getStoreId()])
+            ->setTemplateVars($mail->getVars())
+            ->setFrom($mail->getSenderMail());
+    }
+
+    /**
+     * @param $recipients
+     * @param $transportBuilder
+     */
+    protected function applyRecipientsOnTransportBuilder($recipients, $transportBuilder)
+    {
+        // Some times magento does not save recipients as array
+        if (is_array($recipients)) {
+            foreach ($recipients as $recipient) {
+                $transportBuilder->addTo(
+                    $recipient
+                );
+            }
+        } else {
+            $transportBuilder->addTo(
+                $recipients
+            );
+        }
     }
 }
