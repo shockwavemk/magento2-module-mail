@@ -253,7 +253,8 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     }
 
     /**
-     * TODO
+     * Get the recipients as string array
+     * Recipients are stored as json in database
      *
      * @return string[]
      */

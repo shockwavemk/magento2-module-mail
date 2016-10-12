@@ -74,7 +74,7 @@ class Attachment extends \Magento\Framework\Model\AbstractModel implements JsonS
     }
 
     /**
-     *
+     * Returns a mime part converted attachment
      *
      * @return Zend_Mime_Part
      */

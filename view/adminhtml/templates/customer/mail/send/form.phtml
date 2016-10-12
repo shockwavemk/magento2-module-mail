@@ -14,19 +14,19 @@
         <legend class="legend"><span><?php /* @escapeNotVerified */ echo __('"Send to" configuration') ?></span></legend><br>
 
         <div class="field choice">
-            <input type="radio" name="resend_type" id="resend-to-mail" value="resend" title="<?php /* @escapeNotVerified */ echo __('Resend stored mail') ?>"<?php if (true): ?> checked="checked"<?php endif; ?> class="radio"/>
+            <input type="radio" name="resend_type" id="resend-to-mail" value="resend" title="<?php /* @escapeNotVerified */ echo __('Resend stored mail') ?>" class="radio"/>
             <label class="label" for="resend-to-mail"><span><?php /* @escapeNotVerified */ echo __('Resend stored mail') ?></span></label>
         </div>
 
         <div class="field choice">
-            <input type="radio" name="resend_type" id="recalculate-and-send-to-mail" value="recalculate" title="<?php /* @escapeNotVerified */ echo __('Recalculate mail and send') ?>"<?php if (true): ?> checked="checked"<?php endif; ?> class="radio"/>
+            <input type="radio" name="resend_type" id="recalculate-and-send-to-mail" value="recalculate" title="<?php /* @escapeNotVerified */ echo __('Recalculate mail and send') ?>" checked="checked" class="radio"/>
             <label class="label" for="recalculate-and-send-to-mail"><span><?php /* @escapeNotVerified */ echo __('Recalculate mail and send') ?></span></label>
         </div>
 
         <div class="field email required">
             <label class="label" for="email"><span><?php /* @escapeNotVerified */ echo __('Send to email') ?></span></label>
             <div class="control">
-                <input type="email" name="email" id="email" value="<?php $recipients = $block->getMail()->getRecipients(); echo reset($recipients) ?>" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
+                <input type="email" name="email" id="email" value="<?php $recipients = $block->getMail()->getRecipients(); echo is_array($recipients) ? reset($recipients) : $recipients ?>" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
             </div>
         </div>
 

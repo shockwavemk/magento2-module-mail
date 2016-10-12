@@ -22,14 +22,14 @@
                 <default>
                     <label>Default</label>
                     <value>default</value>
-                    <class>Magento\Framework\Mail\Transport</class>
+                    <class>\Magento\Framework\Mail\Transport</class>
                 </default>
             </types>
             <storages>
                 <default>
                     <label>Default</label>
                     <value>default</value>
-                    <class>Shockwavemk\Mail\Base\Model\Storages\DefaultStorage</class>
+                    <class>\Shockwavemk\Mail\Base\Model\Storages\DefaultStorage</class>
                 </default>
             </storages>
         </transport>
