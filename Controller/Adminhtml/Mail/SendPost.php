@@ -90,6 +90,8 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
             /** @var AttachmentInterface[] $parentAttachments */
             $parentAttachments = $mail->getAttachments();
 
+            $parentCustomerId = $mail->getCustomerId();
+
             // Set parent id to allow parent links in frontend
             $mail->setParentId(
                 $mail->getId()
@@ -115,7 +117,10 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
                 $transport = $transportBuilder->getBackupTransport($parentMessage);
             }
 
-            $transport->getMail()->setAttachments($parentAttachments);
+            $transport->getMail()
+                ->setAttachments($parentAttachments)
+                ->setCustomerId($parentCustomerId)
+            ;
 
             /** @var \Shockwavemk\Mail\Base\Model\Transports\TransportInterface $transport */
             $transport->sendMessage();

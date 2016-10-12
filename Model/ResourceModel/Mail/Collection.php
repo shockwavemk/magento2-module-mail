@@ -5,8 +5,6 @@
  */
 namespace Shockwavemk\Mail\Base\Model\ResourceModel\Mail;
 
-use Magento\Framework\App\RequestInterface;
-
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
     protected $_selectedCustomerId;

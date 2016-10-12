@@ -16,7 +16,6 @@ class Mail extends \Magento\Customer\Controller\Adminhtml\Index
     {
         $this->initCurrentCustomer();
 
-        $resultLayout = $this->resultLayoutFactory->create();
-        return $resultLayout;
+        return $this->resultLayoutFactory->create();
     }
 }

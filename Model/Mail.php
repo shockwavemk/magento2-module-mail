@@ -478,6 +478,8 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
         }
 
         $this->setData('attachments', $attachments);
+
+        return $this;
     }
 
     /**
