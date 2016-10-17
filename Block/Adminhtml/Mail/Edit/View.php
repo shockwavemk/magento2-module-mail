@@ -58,7 +58,9 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
             'send',
             [
                 'label' => __('Send mail ...'),
-                'onclick' => "setLocation('{$this->getUrl('*/*/send', array('id' => $this->_mail->getId()))}')",
+                'onclick' => "setLocation('{$this->getUrl('*/*/send', 
+                    ['id' => $this->_mail->getId()]
+                    )}')",
                 'class' => 'task'
             ]
         );
@@ -67,7 +69,10 @@ class View extends \Magento\Backend\Block\Widget\Form\Container
             'send_post',
             [
                 'label' => __('Resend mail'),
-                'onclick' => "setLocation('{$this->getUrl('*/*/sendPost', array('id' => $this->_mail->getId()))}')",
+                'onclick' => "setLocation('{$this->getUrl('*/*/sendPost', 
+                [
+                    'id' => $this->_mail->getId()
+                ])}')",
                 'class' => 'task'
             ]
         );
