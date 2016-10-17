@@ -61,7 +61,7 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
         $mail->load($mailId);
 
         /** @noinspection IsEmptyFunctionUsageInspection */
-        if(empty($mailId) || empty($mail->getId()) || empty($email) || empty($recalculate)) {
+        if(empty($mailId) || empty($mail->getId())) {
 
             $redirectUrl = $this->_buildUrl(
                 'customer/mail/edit',
@@ -69,8 +69,8 @@ class SendPost extends \Shockwavemk\Mail\Base\Controller\Adminhtml\Mail
             );
 
             $this->messageManager->addException(new \Exception(
-                __('Please provide all data for resending.')),
-                __('Please provide all data for resending.')
+                __('Mail can not be loaded.')),
+                __('Mail can not be loaded.')
             );
 
             return $this->resultRedirectFactory
