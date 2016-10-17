@@ -13,8 +13,7 @@
 <script>
     require([
             "Magento_Ui/js/modal/confirm",
-            "prototype",
-            "Magento_Catalog/catalog/product/composite/configure"
+            "prototype"
         ], function(confirm){
 
 //<!--
@@ -31,45 +30,22 @@
                             parameters: {form_key: FORM_KEY},
                             onComplete: <?php /* @escapeNotVerified */ echo $block->getJsObjectName() ?>.initGrid.bind(<?php /* @escapeNotVerified */ echo $block->getJsObjectName() ?>),
                         evalScripts:true
-                }
-            );
-        },
+                        }
+                    );
+                },
 
-        configureItem: function (itemId) {
-        productConfigure.setOnLoadIFrameCallback('mail', this.cbOnLoadIframe.bind(this));
-        productConfigure.showItemConfiguration('mail', itemId);
-        return false;
-    },
+                configureItem: function (itemId) {
+                    productConfigure.setOnLoadIFrameCallback('mail', this.cbOnLoadIframe.bind(this));
+                    productConfigure.showItemConfiguration('mail', itemId);
+                    return false;
+                },
 
-    cbOnLoadIframe: function (response) {
-        if (!response.ok) {
-            return;
-        }
-        this.reload();
-    },
-
-    removeItem: function (itemId) {
-        var self = this;
-
-        confirm({
-            content: '<?php /* @escapeNotVerified */ echo __('Are you sure you want to remove this item?') ?>',
-            actions: {
-                confirm: function () {
-                    self.reload('&delete=' + itemId);
+                cbOnLoadIframe: function (response) {
+                    if (!response.ok) {
+                        return;
+                    }
+                    this.reload();
                 }
             }
-        });
-    }
-    }
-
-    productConfigure.addListType(
-        'mail',
-        {
-            urlFetch: '<?php /* @escapeNotVerified */ echo $block->getUrl('customer/mail_product_composite_mail/configure') ?>',
-            urlConfirm: '<?php /* @escapeNotVerified */ echo $block->getUrl('customer/mail_product_composite_mail/update') ?>'
-        }
-    );
-    //-->
-
     });
 </script>

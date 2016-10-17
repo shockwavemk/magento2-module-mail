@@ -58,7 +58,6 @@ use stdClass;
  * @method \Shockwavemk\Mail\Base\Model\Mail setLanguageCode(string $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setRecipientVariables(array $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setMessage(\Shockwavemk\Mail\Base\Model\Mail\MessageInterface $message)
- * @method \Shockwavemk\Mail\Base\Model\Mail setAttachments(AttachmentInterface[] $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setAdditionalMessages(array $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setAdditionalInlines(array $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setDeliveryTime(string $value)
@@ -78,14 +77,11 @@ use stdClass;
  * @method \Shockwavemk\Mail\Base\Model\Mail setSkipVerificationEnabled(bool $value)
  * @method \Shockwavemk\Mail\Base\Model\Mail setCustomHeaders(array $values)
  * @method \Shockwavemk\Mail\Base\Model\Mail setCustomVariables(array $values)
- *
  * @method \Shockwavemk\Mail\Base\Model\Mail setResult(stdClass $value) - will not be saved
  *
  * @property TimezoneInterface _timeZone
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-
-/** @noinspection ClassOverridesFieldOfSuperClassInspection */
 class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSerializable
 {
     /**
@@ -253,7 +249,8 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     }
 
     /**
-     * TODO
+     * Get the recipients as string array
+     * Recipients are stored as json in database
      *
      * @return string[]
      */
@@ -466,6 +463,22 @@ class Mail extends \Magento\Framework\Model\AbstractModel implements JsonSeriali
     {
         $value = json_encode($value);
         $this->setData('recipients', $value);
+        return $this;
+    }
+
+    /**
+     * Set reverse link on each attached entity
+     *
+     * @var $attachments AttachmentInterface[]
+     */
+    public function setAttachments($attachments) {
+        /** @var AttachmentInterface $attachment */
+        foreach ($attachments as $attachment) {
+            $attachment->setMail($this);
+        }
+
+        $this->setData('attachments', $attachments);
+
         return $this;
     }
 

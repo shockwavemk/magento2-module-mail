@@ -118,8 +118,12 @@ Select customer in main admin menu:
 ![](./docs/magento2-customer-menu.png)
 
 
+The marketing - user content - tab is enhanced by an additional menu point.
+On this new section you can review and resend all (guest and customer) mails
+sent by the magento2 system.
 
 
+![](./docs/magento2-guest-email-review-and-resending.jpg)
 
 
 
@@ -131,7 +135,85 @@ For each of them it is possible to trigger an resending.
 ![](./docs/magento2-mail-resending-and-recalculation.png)
 
 
-### Attachment handling and storeage of sent files - done right!
+### Attachment handling and storeage of sent files
+
+The base mail module supports attachment sending.
+Magento2 does not support native file attachment handling, therefore you need to
+add some code on your own.
+
+In order to add files from filesystem, you need to change your email
+sending strategy to "async".
+
+You have to modify/override the EmailSenderHandler class.
+
+```php
+
+    /**
+         * @param \Magento\Sales\Model\Order\Email\Sender                          $emailSender
+         * @param \Magento\Sales\Model\ResourceModel\EntityAbstract                $entityResource
+         * @param \Magento\Sales\Model\ResourceModel\Collection\AbstractCollection $entityCollection
+         * @param \Magento\Framework\App\Config\ScopeConfigInterface               $globalConfig
+         * @param Config                                                           $documentConfig
+         * @param ObjectManagerInterface                                           $objectManager
+         */
+        public function __construct(
+            \Magento\Sales\Model\Order\Email\Sender $emailSender,
+            \Magento\Sales\Model\ResourceModel\EntityAbstract $entityResource,
+            \Magento\Sales\Model\ResourceModel\Collection\AbstractCollection $entityCollection,
+            \Magento\Framework\App\Config\ScopeConfigInterface $globalConfig,
+            ObjectManagerInterface $objectManager
+        )
+        {
+            parent::__construct($emailSender, $entityResource, $entityCollection, $globalConfig);
+
+            $this->objectManager = $objectManager;
+            $this->documentConfig = $documentConfig;
+
+            // Dynamic typed build a collection for attachments for later usage
+
+            // Should be extended from \Magento\Framework\Data\Collection
+            $this->attachmentCollection = $this->objectManager->get(
+                'Shockwavemk\Mail\Base\Model\Mail\AttachmentCollectionInterface'
+            );
+        }
+
+
+
+    /**
+     * Handles asynchronous email sending
+     *
+     * @return void
+     * @throws \RuntimeException
+     * @throws \Exception
+     */
+    public function sendEmails()
+    {
+        /** @var \Magento\Sales\Model\AbstractModel $item */
+        foreach ($this->entityCollection->getItems() as $item) {
+
+        // add this code
+
+            // Create a new attachment
+
+            if (!is_null($attachmentFilePath)) {
+                /** @var \Shockwavemk\Mail\Base\Model\Mail\AttachmentInterface|\Magento\Framework\DataObject $attachment */
+                $attachment = $this->objectManager
+                    ->create('Shockwavemk\Mail\Base\Model\Mail\AttachmentInterface');
+
+                // Do not transfer binary data to mail entity at this point: The mailer can handle file reading on its own
+                $attachment->setFilePath($attachmentFilePath);
+
+                // Add attachment to attachment collection
+                // Let the mailer later decide how to handle them
+                $this->attachmentCollection->addItem($attachment);
+            }
+
+        }
+
+    }
+
+```
+
 
 
 

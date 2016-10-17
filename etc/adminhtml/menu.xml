@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Shockwavemk_MailBase::customer_mail_overview_all" title="Tranactional mails" translate="title" module="Shockwavemk_Mail_Base" parent="Magento_Backend::marketing_user_content" sortOrder="10" action="customer/mail/overview" resource="Shockwavemk_MailBase::overview_all"/>
+    </menu>
+</config>
