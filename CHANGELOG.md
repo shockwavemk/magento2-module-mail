@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
+
+## [v1.1.0] - 2016-10-10
+
+### Added
+- Guest/customer mail review and resending grid
+
 ### Fixed
 - Fix resending: In case only one recipient is available, no implode
   several email addresses must take place.
